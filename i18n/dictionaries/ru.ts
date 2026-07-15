@@ -47,8 +47,8 @@ const ru = {
     cta: 'Смотреть каталог',
     slides: {
       somua: { title: 'SOMUA S-35', subtitle: 'Французский лёгкий танк' },
-      b1: { title: 'B1 bis', subtitle: 'Французский тяжёлый танк' },
-      t28: { title: 'T-28', subtitle: 'Советский средний танк' },
+      b1: { title: 'B1 early', subtitle: 'Французский тяжёлый танк' },
+      t28: { title: 'Т-29-5', subtitle: 'Советский средний танк' },
       german: { title: 'Nb.Fz.', subtitle: 'Немецкий танк' },
     },
   },

@@ -47,8 +47,8 @@ const en = {
     cta: 'View catalog',
     slides: {
       somua: { title: 'SOMUA S-35', subtitle: 'French light tank' },
-      b1: { title: 'B1 bis', subtitle: 'French heavy tank' },
-      t28: { title: 'T-28', subtitle: 'Soviet medium tank' },
+      b1: { title: 'B1 early', subtitle: 'French heavy tank' },
+      t28: { title: 'Т-29-5', subtitle: 'Soviet medium tank' },
       german: { title: 'Nb.Fz.', subtitle: 'German tank' },
     },
   },

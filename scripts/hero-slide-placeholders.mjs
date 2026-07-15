@@ -14,5 +14,5 @@ const make = async (file, c1, c2, label) => {
   await sharp(Buffer.from(svg)).jpeg({ quality: 82 }).toFile(file);
   console.log(file);
 };
-await make('public/hero/char-b1.jpg', '#241f16', '#3a3324', 'CHAR B1 BIS');
+await make('public/hero/char-b1.jpg', '#241f16', '#3a3324', 'CHAR B1 early');
 await make('public/hero/t-26.jpg', '#161d1a', '#2a3830', 'T-26');

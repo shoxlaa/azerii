@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AZERII
 
-## Getting Started
+Online store for **scale models of armored vehicles**.
 
-First, run the development server:
+Built with **Next.js (App Router)**, **TypeScript**, **Tailwind CSS**, and **ESLint**.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command         | Description                     |
+| --------------- | ------------------------------- |
+| `npm run dev`   | Start the dev server            |
+| `npm run build` | Production build                |
+| `npm run start` | Run the production build        |
+| `npm run lint`  | Lint the project with ESLint    |
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+azerii/
+├── app/            # Routes & pages (App Router)
+├── components/     # Reusable UI components
+├── constants/      # Constants: colors, product statuses, tech types, menu, socials
+├── hooks/          # Custom React hooks
+├── i18n/           # EN/RU translation dictionaries & locale config
+├── lib/            # Utilities: EUR price formatting, data client
+├── server/         # Server-only logic: orders, contact form, mail
+├── types/          # TypeScript types: Product, Category, Order, Locale, …
+├── public/         # Static assets
+└── proxy.ts        # Locale handling & redirects (stub; Next 16 replaces middleware)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> **Note on `proxy.ts`:** Next.js 16 deprecated the `middleware` file
+> convention and renamed it to **`proxy`** (exported function `proxy`,
+> defaulting to the Node.js runtime). This project uses `proxy.ts`
+> accordingly.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Folder details
 
-## Deploy on Vercel
+- **`app/`** — App Router entry point. Layouts, pages and route handlers.
+- **`components/`** — Presentational, reusable components (e.g. `Badge`).
+- **`constants/`** — Single source of truth for brand colors, the list of
+  product statuses and their badge colors, tech types, categories, the
+  navigation menu and social links.
+- **`hooks/`** — Client-side React hooks (e.g. `useLocale`).
+- **`i18n/`** — `config.ts` (supported locales), `dictionaries/{en,ru}.ts`
+  and `index.ts` exposing `getDictionary(locale)`.
+- **`lib/`** — Framework-agnostic helpers: `format.ts` (EUR price
+  formatting via `Intl.NumberFormat`) and `data.ts` (data-access client).
+- **`server/`** — Modules marked `server-only`: order creation, contact
+  form handling and mail sending. Not importable from client components.
+- **`types/`** — Domain model: `Locale`, `ProductStatus`, `TechType`,
+  `CategoryType`, `Product`, `Order` and supporting interfaces.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Internationalization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Two locales are supported: **English (`en`)** and **Russian (`ru`)**.
+Dictionaries live in `i18n/dictionaries/`; retrieve one with
+`getDictionary(locale)`.
+
+## Conventions
+
+- Prices are stored as **EUR cents** (integers) and formatted for display
+  with `formatPrice()` from `lib/format.ts`.
+- The `@/*` import alias maps to the project root.
+
+> Catalog and product pages are **not** implemented yet — this is the
+> scaffold only.

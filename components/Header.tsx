@@ -57,8 +57,8 @@ export function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className={`font-heading text-[16px] uppercase tracking-wide underline-offset-8 transition-colors hover:text-gold hover:underline ${
-                isActive(item.href) ? 'text-gold' : 'text-body'
+              className={`font-heading text-[16px] uppercase tracking-wide underline-offset-8 transition-colors hover:text-accent-text hover:underline ${
+                isActive(item.href) ? 'text-accent-text' : 'text-body'
               }`}
             >
               {item.label}
@@ -70,7 +70,7 @@ export function Header() {
         <div className="flex items-center gap-4 md:gap-5">
           <button
             onClick={toggleLocale}
-            className="font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:text-gold"
+            className="font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:text-accent-text"
             aria-label="Сменить язык"
           >
             {locale === 'ru' ? 'RU' : 'EN'}
@@ -83,14 +83,14 @@ export function Header() {
             <ThemeToggle />
           </div>
 
-          <button className="text-body transition-colors hover:text-gold" aria-label="Поиск">
+          <button className="text-body transition-colors hover:text-accent-text" aria-label="Поиск">
             <SearchIcon className="h-5 w-5" />
           </button>
 
-          <button className="relative text-body transition-colors hover:text-gold" aria-label="Корзина">
+          <button className="relative text-body transition-colors hover:text-accent-text" aria-label="Корзина">
             <CartIcon className="h-6 w-6" />
             {CART_COUNT > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-gold-bg px-1 text-[10px] font-bold text-black">
+              <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-cream">
                 {CART_COUNT}
               </span>
             )}
@@ -99,7 +99,7 @@ export function Header() {
           {/* Burger (mobile/tablet) */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="text-body transition-colors hover:text-gold lg:hidden"
+            className="text-body transition-colors hover:text-accent-text lg:hidden"
             aria-label="Меню"
             aria-expanded={menuOpen}
           >
@@ -117,8 +117,8 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`py-3 font-heading text-[16px] uppercase tracking-wide transition-colors hover:text-gold ${
-                  isActive(item.href) ? 'text-gold' : 'text-body'
+                className={`py-3 font-heading text-[16px] uppercase tracking-wide transition-colors hover:text-accent-text ${
+                  isActive(item.href) ? 'text-accent-text' : 'text-body'
                 }`}
               >
                 {item.label}

@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Local source assets (not deployed)
 assets/
+
+# Dev screenshots / design refs (not needed for deploy)
+design/

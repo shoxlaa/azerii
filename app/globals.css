@@ -14,47 +14,46 @@
 @source "../types";
 
 /* ------------------------------------------------------------------ *
- * Design tokens (Tailwind v4 @theme).
- * Themeable colors hold the LIGHT values here (the default) and are
- * overridden for the dark theme in the `.dark` block below. Static
- * tokens (button gold, military, footer, status) are the same in both.
+ * Design tokens (Tailwind v4 @theme) — AZ-TNK military palette.
+ * One green "accent" system (olive). No gold anywhere.
+ * Themeable tokens hold LIGHT (cream) defaults; dark overrides in `.dark`.
  * ------------------------------------------------------------------ */
 @theme {
-  /* Themeable — light defaults */
-  --color-bg: #f5f1e8;
-  --color-panel: #ffffff;
-  --color-heading: #1a1a1a;
+  /* Themeable — light defaults (white theme) */
+  --color-bg: #ffffff; /* white surface */
+  --color-panel: #f5f5f5; /* subtly separated panels/cards */
+  --color-heading: #1a1a1a; /* ink */
   --color-body: #2a2a2a;
   --color-subtle: #5a5346;
-  --color-gold: #a8894f; /* text / links */
-  --color-gold-hover: #8f7440;
+  --color-accent-text: #3f4a24; /* accent text/links on light bg (AA on cream) */
   --color-border: rgba(0, 0, 0, 0.12);
 
-  /* Footer — themeable (light defaults; dark overrides in .dark) */
-  --color-footer: #ffffff;
+  /* Footer — themeable */
+  --color-footer: #f5f5f5;
   --color-footer-text: #5a5346;
   --color-footer-heading: #1a1a1a;
 
-  /* Static — identical in both themes */
-  --color-gold-bg: #c2a36b; /* button background gold */
-  --color-gold-bg-hover: #d4b47a;
-  --color-military: #556b2f;
-  --color-military-hover: #6b8138;
+  /* Static — same in both themes */
+  --color-cream: #efe9da; /* light surface / text on olive fills */
+  --color-ink: #1a1a1a;
+  --color-accent: #4e5a2e; /* olive — fills / buttons / table headers / badges */
+  --color-accent-hover: #5e6d38; /* slightly lighter on hover */
 
-  /* Status colors (badges) — same in both themes. */
-  --color-status-in-stock: #5c8a3a;
-  --color-status-out-of-stock: #b23a2e;
-  --color-status-coming-soon: #c88a2c;
-  --color-status-planned: #3b7fb0;
-  --color-status-discontinued: #7a2a22;
-  --color-status-limited: #9a6bb0;
-  --color-status-in-development: #c88a2c;
+  /* Status colors (badges) — muted military tones, no gold/amber. */
+  --color-status-in-stock: #55702f; /* green — available */
+  --color-status-out-of-stock: #8f3a2e; /* brick red */
+  --color-status-coming-soon: #4a5a63; /* steel */
+  --color-status-planned: #6b6f7a; /* grey */
+  --color-status-discontinued: #5e2a22; /* dark red */
+  --color-status-limited: #6b5a30; /* bronze/khaki */
+  --color-status-in-development: #565c3a; /* olive-grey */
 
   --container-site: 1200px;
 }
 
 @theme inline {
-  --font-display: var(--font-stencil);
+  /* font-display — Latin serif stencil (model names, brand: SOMUA S-35, AZERII). */
+  --font-display: var(--font-stencil), sans-serif;
   --font-heading: var(--font-oswald);
   --font-body: var(--font-roboto);
 }
@@ -75,8 +74,7 @@
   --color-heading: #f2ede3;
   --color-body: #ddd6c8;
   --color-subtle: #cfc7b8;
-  --color-gold: #c2a36b;
-  --color-gold-hover: #d4b47a;
+  --color-accent-text: #8a9a5b; /* light olive on dark (AA) */
   --color-border: rgba(255, 255, 255, 0.1);
   --color-footer: #111111;
   --color-footer-text: #aaaaaa;
@@ -102,6 +100,15 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
+/* Olive "plate" table header (AZ-TNK poster style): olive fill, cream text. */
+.table-head {
+  background-color: var(--color-accent);
+  color: var(--color-cream);
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 /* ------------------------------------------------------------------ *
  * Typography helpers (desktop scale)
  * ------------------------------------------------------------------ */
@@ -123,7 +130,7 @@ body {
 .text-price {
   font-family: var(--font-heading);
   font-size: 42px;
-  color: var(--color-gold);
+  color: var(--color-accent-text);
 }
 
 /* Responsive H1: scale down on smaller screens. */

@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 
 /** Color tokens to preview. */
 const COLOR_TOKENS: { name: string; token: string; hex: string; ring?: boolean }[] = [
-  { name: 'bg', token: '--color-bg', hex: '#1A1A1A', ring: true },
-  { name: 'panel', token: '--color-panel', hex: '#1C1C1C', ring: true },
-  { name: 'gold', token: '--color-gold', hex: '#C2A36B' },
-  { name: 'gold-hover', token: '--color-gold-hover', hex: '#D4B47A' },
+  { name: 'bg / white', token: '--color-bg', hex: '#FFFFFF', ring: true },
+  { name: 'ink', token: '--color-ink', hex: '#1A1A1A' },
+  { name: 'accent', token: '--color-accent', hex: '#4E5A2E' },
+  { name: 'accent-hover', token: '--color-accent-hover', hex: '#5E6D38' },
+  { name: 'accent-text', token: '--color-accent-text', hex: '#8A9A5B' },
   { name: 'heading', token: '--color-heading', hex: '#F2EDE3' },
   { name: 'body', token: '--color-body', hex: '#DDD6C8' },
   { name: 'subtle', token: '--color-subtle', hex: '#CFC7B8' },
   { name: 'footer', token: '--color-footer', hex: '#111111', ring: true },
-  { name: 'footer-text', token: '--color-footer-text', hex: '#AAAAAA' },
 ];
 
 const FONT_SAMPLES: { label: string; varName: string; className: string; note?: string }[] = [
@@ -46,7 +46,7 @@ export default function StyleguidePage() {
   return (
     <div className="py-16">
       <Container>
-        <p className="font-heading text-sm uppercase tracking-[3px] text-gold">
+        <p className="font-heading text-sm uppercase tracking-[3px] text-accent-text">
           AZERII Design System
         </p>
         <h1 className="text-h1 mt-2">STYLEGUIDE</h1>
@@ -122,7 +122,7 @@ export default function StyleguidePage() {
             </div>
             <div>
               <p className="font-mono text-xs text-subtle">
-                Цена · 42px / gold
+                Цена · 42px / accent
               </p>
               <p className="text-price mt-2">{formatPrice(49900, 'en')}</p>
             </div>

@@ -1,14 +1,25 @@
 /**
- * Workshop video strip — demo data. Replace `href` with real YouTube links
- * and `thumbnail` with real preview images later.
+ * Workshop videos. Real data comes from the YouTube RSS feed (see lib/youtube.ts);
+ * this list is the fallback used when the feed is unavailable.
  */
+
+/** Ilgar Ismailov (@IlgarIsmailovrctank) — source channel. */
+export const YOUTUBE_CHANNEL_ID = 'UCYh8OT9RzBKDbgupwZ-CPsQ';
+export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@IlgarIsmailovrctank';
+
+/** "AzerII scale models" playlist — the workshop strip shows ONLY these videos. */
+export const YOUTUBE_PLAYLIST_ID = 'PLDfYO28QoDKc';
+export const YOUTUBE_PLAYLIST_URL =
+  'https://www.youtube.com/playlist?list=PLDfYO28QoDKc';
+
 export interface WorkshopVideo {
   id: string;
   thumbnail: string;
-  duration: string;
   author: string;
   caption: string;
   href: string;
+  duration?: string;
+  published?: string;
 }
 
 export const WORKSHOP_VIDEOS: WorkshopVideo[] = [

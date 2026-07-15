@@ -72,7 +72,7 @@ export function Footer() {
                     key={s.name}
                     href={s.href}
                     aria-label={s.label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-footer-text transition-colors hover:border-gold hover:text-gold"
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-footer-text transition-colors hover:border-accent hover:text-accent-text"
                   >
                     <Icon className="h-5 w-5" />
                   </a>
@@ -103,11 +103,11 @@ export function Footer() {
                 required
                 placeholder={t.subscribe.placeholder}
                 aria-label={t.subscribe.placeholder}
-                className="min-w-0 flex-1 border border-border bg-transparent px-3 py-2.5 text-sm text-footer-heading outline-none placeholder:text-footer-text focus:border-gold-bg"
+                className="min-w-0 flex-1 border border-border bg-transparent px-3 py-2.5 text-sm text-footer-heading outline-none placeholder:text-footer-text focus:border-accent"
               />
               <button
                 type="submit"
-                className="shrink-0 bg-gold-bg px-5 py-2.5 font-heading text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-gold-bg-hover"
+                className="shrink-0 bg-accent px-5 py-2.5 font-heading text-sm font-semibold uppercase tracking-wide text-cream transition-colors hover:bg-accent-hover"
               >
                 {t.subscribe.button}
               </button>
@@ -140,7 +140,7 @@ function FooterColumn({
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((link) => (
           <li key={link.label}>
-            <Link href={link.href} className="transition-colors hover:text-gold">
+            <Link href={link.href} className="transition-colors hover:text-accent-text">
               {link.label}
             </Link>
           </li>

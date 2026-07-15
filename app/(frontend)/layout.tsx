@@ -6,7 +6,7 @@ import { Footer } from '@/components/Footer';
 import { LocaleProvider } from '@/i18n/locale-context';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
-/** Display / headings — stencil military look. Logo, H1. */
+/** Display — Latin serif stencil for model names / brand (SOMUA S-35, AZERII). */
 const stencil = Stardos_Stencil({
   weight: ['400', '700'],
   subsets: ['latin'],

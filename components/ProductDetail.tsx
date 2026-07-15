@@ -63,7 +63,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     aria-current={i === active}
                     className={`relative h-[110px] w-[180px] shrink-0 overflow-hidden rounded-[4px] border-2 transition ${
                       i === active
-                        ? 'border-gold'
+                        ? 'border-accent'
                         : 'border-transparent hover:brightness-110'
                     }`}
                   >
@@ -120,7 +120,7 @@ export function ProductDetail({ product }: { product: Product }) {
               >
                 {t.tabs[k]}
                 {tab === k ? (
-                  <span className="absolute -bottom-px left-0 h-[3px] w-full bg-gold" />
+                  <span className="absolute -bottom-px left-0 h-[3px] w-full bg-accent" />
                 ) : null}
               </button>
             ))}
@@ -135,7 +135,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 <ul className="mt-6 space-y-2.5">
                   {t.features.map((f) => (
                     <li key={f} className="flex items-center gap-2.5">
-                      <span className="text-gold">✓</span>
+                      <span className="text-accent-text">✓</span>
                       {f}
                     </li>
                   ))}
@@ -146,12 +146,20 @@ export function ProductDetail({ product }: { product: Product }) {
             {tab === 'history' ? <p className="max-w-2xl">{t.historyText}</p> : null}
 
             {tab === 'specs' ? (
-              <dl className="grid max-w-md grid-cols-[auto_1fr] gap-x-10 gap-y-3.5">
-                <SpecRow label={t.specs.type} value={dict.category[product.category]} />
-                <SpecRow label={t.specs.technology} value={dict.tech[product.tech]} />
-                <SpecRow label={t.specs.scale} value={product.scale} />
-                <SpecRow label={t.specs.status} value={dict.status[product.status]} />
-              </dl>
+              <table className="w-full max-w-lg border-collapse overflow-hidden rounded-[4px] border border-border text-left text-sm">
+                <thead>
+                  <tr className="table-head">
+                    <th className="px-4 py-2.5 text-xs font-semibold">{t.specs.param}</th>
+                    <th className="px-4 py-2.5 text-xs font-semibold">{t.specs.value}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <SpecRow label={t.specs.type} value={dict.category[product.category]} />
+                  <SpecRow label={t.specs.technology} value={dict.tech[product.tech]} />
+                  <SpecRow label={t.specs.scale} value={product.scale} />
+                  <SpecRow label={t.specs.status} value={dict.status[product.status]} />
+                </tbody>
+              </table>
             ) : null}
           </div>
         </div>
@@ -188,11 +196,11 @@ export function ProductDetail({ product }: { product: Product }) {
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <>
-      <dt className="font-heading text-sm font-semibold uppercase tracking-wide text-subtle">
+    <tr className="border-t border-border">
+      <td className="px-4 py-2.5 font-heading text-xs font-semibold uppercase tracking-wide text-subtle">
         {label}
-      </dt>
-      <dd className="text-body">{value}</dd>
-    </>
+      </td>
+      <td className="px-4 py-2.5 text-body">{value}</td>
+    </tr>
   );
 }

@@ -27,7 +27,7 @@ export function ProductCard({
   const canBuy = product.status !== 'out_of_stock' && product.status !== 'in_development';
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-gold/50">
+    <div className="group flex flex-col overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-accent/50">
       {/* Image */}
       <Link
         href={`/catalog/${product.slug}`}
@@ -54,7 +54,7 @@ export function ProductCard({
       {/* Body */}
       <div className="flex flex-1 flex-col p-4">
         <Link href={`/catalog/${product.slug}`}>
-          <h3 className="font-heading text-base font-semibold uppercase leading-tight tracking-wide text-heading transition-colors group-hover:text-gold">
+          <h3 className="font-heading text-base font-semibold uppercase leading-tight tracking-wide text-heading transition-colors group-hover:text-accent-text">
             {name}
           </h3>
         </Link>
@@ -63,14 +63,14 @@ export function ProductCard({
         </p>
 
         <div className="mt-4 flex items-center justify-between">
-          <span className="font-heading text-xl font-semibold text-gold">
+          <span className="font-heading text-xl font-semibold text-accent-text">
             {formatPrice(product.priceEur, locale)}
           </span>
           {canBuy ? (
             <button
               type="button"
               aria-label={addToCartLabel}
-              className="flex h-9 w-9 items-center justify-center rounded-[4px] border border-border text-body transition-colors hover:border-gold hover:text-gold"
+              className="flex h-9 w-9 items-center justify-center rounded-[4px] border border-border text-body transition-colors hover:border-accent hover:text-accent-text"
             >
               <CartIcon className="h-5 w-5" />
             </button>

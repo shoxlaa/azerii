@@ -98,6 +98,8 @@ const en = {
     historyText:
       'A faithful reproduction of a historic armored vehicle. Each release is researched from archive references so the proportions and markings match the original.',
     specs: {
+      param: 'Parameter',
+      value: 'Value',
       type: 'Type',
       technology: 'Technology',
       scale: 'Scale',

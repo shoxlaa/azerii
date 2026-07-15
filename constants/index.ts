@@ -14,7 +14,7 @@ import type {
 /** Brand color palette. */
 export const COLORS = {
   primary: '#1a1a1a',
-  accent: '#c8a24a', // brass / brushed-gold accent
+  accent: '#4e5a2e', // olive military accent
   background: '#0a0a0a',
   surface: '#141414',
   muted: '#6b7280',
@@ -38,13 +38,13 @@ export const PRODUCT_STATUSES: ProductStatus[] = [
  * Kept in sync with the `--color-status-*` tokens in globals.css.
  */
 export const PRODUCT_STATUS_COLORS: Record<ProductStatus, string> = {
-  in_stock: '#5c8a3a',
-  out_of_stock: '#b23a2e',
-  coming_soon: '#c88a2c',
-  planned: '#3b7fb0',
-  discontinued: '#7a2a22',
-  limited: '#9a6bb0',
-  in_development: '#c88a2c',
+  in_stock: '#55702f',
+  out_of_stock: '#8f3a2e',
+  coming_soon: '#4a5a63',
+  planned: '#6b6f7a',
+  discontinued: '#5e2a22',
+  limited: '#6b5a30',
+  in_development: '#565c3a',
 };
 
 /** All manufacturing technologies in display order. */

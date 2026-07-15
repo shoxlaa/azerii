@@ -27,7 +27,7 @@ export function CatalogSection({ products }: CatalogSectionProps) {
           action={
             <Link
               href="/catalog"
-              className="font-heading text-sm font-semibold uppercase tracking-wide text-gold transition-colors hover:text-gold-hover"
+              className="font-heading text-sm font-semibold uppercase tracking-wide text-accent-text transition-colors hover:text-accent-text"
             >
               {t.viewAll} <span aria-hidden>→</span>
             </Link>

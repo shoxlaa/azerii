@@ -28,7 +28,7 @@ export function CatalogView({ products }: { products: Product[] }) {
     <section className="py-12 md:py-16">
       <Container>
         {/* Header */}
-        <h1 className="font-display text-[40px] font-bold uppercase tracking-[1px] text-heading md:text-[56px]">
+        <h1 className="font-heading text-[40px] font-bold uppercase tracking-[1px] text-heading md:text-[56px]">
           {t.title}
         </h1>
         <p className="mt-1 text-subtle">
@@ -41,7 +41,7 @@ export function CatalogView({ products }: { products: Product[] }) {
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="inline-flex items-center gap-2 rounded-[4px] border border-border px-4 py-2 font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:border-gold hover:text-gold md:hidden"
+            className="inline-flex items-center gap-2 rounded-[4px] border border-border px-4 py-2 font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:border-accent hover:text-accent-text md:hidden"
           >
             <FilterIcon className="h-4 w-4" />
             {t.filters}
@@ -53,7 +53,7 @@ export function CatalogView({ products }: { products: Product[] }) {
             <select
               value={f.sort}
               onChange={(e) => f.setSort(e.target.value as SortKey)}
-              className="rounded-[4px] border border-border bg-panel px-3 py-2 font-heading text-sm uppercase tracking-wide text-body outline-none focus:border-gold"
+              className="rounded-[4px] border border-border bg-panel px-3 py-2 font-heading text-sm uppercase tracking-wide text-body outline-none focus:border-accent"
             >
               {sortOptions.map((o) => (
                 <option key={o.value} value={o.value}>
@@ -95,7 +95,7 @@ export function CatalogView({ products }: { products: Product[] }) {
             <button
               type="button"
               onClick={f.reset}
-              className="mt-4 font-heading text-sm font-semibold uppercase tracking-wide text-gold transition-colors hover:text-gold-hover"
+              className="mt-4 font-heading text-sm font-semibold uppercase tracking-wide text-accent-text transition-colors hover:text-accent-text"
             >
               {t.reset}
             </button>
@@ -158,8 +158,8 @@ function FilterGroup<T extends string>({
               aria-pressed={active}
               className={`rounded-full border px-3 py-1.5 font-heading text-xs uppercase tracking-wide transition-colors ${
                 active
-                  ? 'border-gold bg-gold-bg text-black'
-                  : 'border-border text-body hover:border-gold hover:text-gold'
+                  ? 'border-accent bg-accent text-cream'
+                  : 'border-border text-body hover:border-accent hover:text-accent-text'
               }`}
             >
               {label(opt)}

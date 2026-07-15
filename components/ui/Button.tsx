@@ -12,9 +12,9 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
   // Primary "buy" — solid gold (static bg), black text, 220×52.
-  buy: 'h-[52px] w-[220px] bg-gold-bg text-black hover:bg-gold-bg-hover',
+  buy: 'h-[52px] w-[220px] bg-accent text-cream hover:bg-accent-hover',
   // Secondary "cart" — transparent, themeable gold outline & text; fills on hover.
-  cart: 'h-[52px] px-6 border border-gold bg-transparent text-gold hover:bg-gold-bg hover:text-black',
+  cart: 'h-[52px] px-6 border border-accent bg-transparent text-accent-text hover:bg-accent hover:text-cream',
 };
 
 /**

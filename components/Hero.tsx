@@ -86,7 +86,7 @@ export function Hero() {
                         <div className="mt-6">
                           <Link
                             href={slide.ctaHref}
-                            className="inline-flex h-12 items-center justify-center gap-2 rounded-[4px] bg-military px-7 font-heading text-sm font-semibold uppercase tracking-wide text-[#F2EDE3] transition-colors hover:bg-military-hover md:h-[52px] md:text-base"
+                            className="inline-flex h-12 items-center justify-center gap-2 rounded-[4px] bg-accent px-7 font-heading text-sm font-semibold uppercase tracking-wide text-[#F2EDE3] transition-colors hover:bg-accent-hover md:h-[52px] md:text-base"
                           >
                             {t.cta}
                             <span aria-hidden>→</span>
@@ -147,7 +147,7 @@ export function Hero() {
             aria-label={`Слайд ${i + 1}`}
             aria-current={i === selectedIndex}
             className={`h-2 rounded-full transition-all ${
-              i === selectedIndex ? 'w-6 bg-[#C2A36B]' : 'w-2 bg-white/50 hover:bg-white/80'
+              i === selectedIndex ? 'w-6 bg-[#8A9A5B]' : 'w-2 bg-white/50 hover:bg-white/80'
             }`}
           />
         ))}

@@ -22,7 +22,7 @@ export function FeaturesRow() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
           {items.map(({ Icon, title, text }) => (
             <div key={title} className="flex items-start gap-4">
-              <Icon className="mt-0.5 h-8 w-8 shrink-0 text-gold" />
+              <Icon className="mt-0.5 h-8 w-8 shrink-0 text-accent-text" />
               <div>
                 <h3 className="font-heading text-sm font-semibold uppercase tracking-wide text-heading">
                   {title}

@@ -14,7 +14,7 @@ export function PromoSection() {
       <Container className="py-14 md:py-16">
         <div className="flex flex-col items-center gap-8 text-center md:flex-row md:gap-10 md:text-left">
           {/* Round emblem (theme-aware logo) */}
-          <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-2 border-gold/40 md:h-32 md:w-32">
+          <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-2 border-accent/40 md:h-32 md:w-32">
             <Image
               src="/logo-dark.png"
               alt=""

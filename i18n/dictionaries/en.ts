@@ -130,6 +130,23 @@ const en = {
       availability: 'By availability',
     },
   },
+  searchBox: {
+    open: 'Search',
+    close: 'Close',
+    placeholder: 'Search models…',
+    loading: 'Searching…',
+    noResults: 'Nothing found',
+    viewAll: 'View all results',
+  },
+  searchPage: {
+    title: 'Search',
+    found: 'results for',
+    prompt: 'Enter a query to search the catalog.',
+    startTyping: 'Search models by name or type.',
+    empty: 'Nothing found',
+    emptyHint: 'Try a different name or type.',
+    browseCatalog: 'Browse the catalog',
+  },
   footer: {
     tagline:
       'Scale models of armored vehicles at 1:16. Accuracy, quality and history in every detail.',

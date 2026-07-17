@@ -10,6 +10,13 @@ export const LOCALES: Locale[] = ['en', 'ru'];
 /** Locale used when none is specified / detected. */
 export const DEFAULT_LOCALE: Locale = 'en';
 
+/**
+ * Cookie that persists the visitor's chosen locale across visits. The proxy
+ * seeds it with DEFAULT_LOCALE on first visit and the language switcher
+ * updates it, so the choice survives reloads and new sessions.
+ */
+export const LOCALE_COOKIE = 'NEXT_LOCALE';
+
 /** Human-readable label for each locale (for the language switcher). */
 export const LOCALE_LABELS: Record<Locale, string> = {
   en: 'English',

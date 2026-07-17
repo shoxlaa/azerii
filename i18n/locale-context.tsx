@@ -6,9 +6,12 @@
  * through `useLocale()`, so switching EN/RU re-renders them together.
  */
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 import type { Locale } from '@/types';
-import { DEFAULT_LOCALE } from './config';
+import { DEFAULT_LOCALE, LOCALE_COOKIE } from './config';
+
+/** One year — matches the proxy so the preference is long-lived. */
+const LOCALE_MAX_AGE = 60 * 60 * 24 * 365;
 
 interface LocaleContextValue {
   locale: Locale;
@@ -25,8 +28,17 @@ export function LocaleProvider({
   children: ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocale] = useState<Locale>(initialLocale);
-  const toggleLocale = () => setLocale((l) => (l === 'ru' ? 'en' : 'ru'));
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+
+  const setLocale = useCallback((next: Locale) => {
+    setLocaleState(next);
+    // Persist the choice so it survives reloads and future visits.
+    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_MAX_AGE}; samesite=lax`;
+  }, []);
+
+  const toggleLocale = useCallback(() => {
+    setLocale(locale === 'ru' ? 'en' : 'ru');
+  }, [locale, setLocale]);
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale, toggleLocale }}>

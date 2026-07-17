@@ -6,13 +6,15 @@ import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { SOCIAL_LINKS } from '@/constants';
 import { Container } from './ui/Container';
-import { FacebookIcon, TikTokIcon, YouTubeIcon } from './icons';
+import { FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon } from './icons';
+import type { SocialName } from '@/constants/socials';
 
-const SOCIAL_ICONS = {
+const SOCIAL_ICONS: Record<SocialName, React.FC<React.SVGProps<SVGSVGElement>>> = {
   tiktok: TikTokIcon,
   facebook: FacebookIcon,
   youtube: YouTubeIcon,
-} as const;
+  instagram: InstagramIcon,
+};
 
 export function Footer() {
   const { locale } = useLocale();
@@ -69,9 +71,12 @@ export function Footer() {
                 const Icon = SOCIAL_ICONS[s.name];
                 return (
                   <a
-                    key={s.name}
+                    key={s.href}
                     href={s.href}
                     aria-label={s.label}
+                    title={s.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-footer-text transition-colors hover:border-accent hover:text-accent-text"
                   >
                     <Icon className="h-5 w-5" />

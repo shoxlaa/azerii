@@ -63,6 +63,27 @@ export function YouTubeIcon(props: IconProps) {
   );
 }
 
+export function InstagramIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      {/* Rounded-square frame (donut via even-odd) */}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Z"
+      />
+      {/* Lens ring */}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"
+      />
+      {/* Flash dot */}
+      <circle cx="16.6" cy="7.4" r="1.1" />
+    </svg>
+  );
+}
+
 export function TargetIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" aria-hidden {...props}>

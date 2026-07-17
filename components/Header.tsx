@@ -7,7 +7,8 @@ import { usePathname } from 'next/navigation';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { ThemeToggle } from './ThemeToggle';
-import { BurgerIcon, CartIcon, CloseIcon, SearchIcon } from './icons';
+import { HeaderSearch } from './HeaderSearch';
+import { BurgerIcon, CartIcon, CloseIcon } from './icons';
 
 /** Placeholder cart item count (wired to real cart state later). */
 const CART_COUNT = 0;
@@ -83,9 +84,7 @@ export function Header() {
             <ThemeToggle />
           </div>
 
-          <button className="text-body transition-colors hover:text-accent-text" aria-label="Поиск">
-            <SearchIcon className="h-5 w-5" />
-          </button>
+          <HeaderSearch />
 
           <button className="relative text-body transition-colors hover:text-accent-text" aria-label="Корзина">
             <CartIcon className="h-6 w-6" />

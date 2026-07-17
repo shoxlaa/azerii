@@ -47,3 +47,7 @@ assets/
 
 # Dev screenshots / design refs (not needed for deploy)
 design/
+
+# Local tooling (machine-specific absolute paths — not portable)
+graphify-out/
+.claude/

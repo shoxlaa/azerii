@@ -11,6 +11,7 @@ import { useCart } from '@/hooks/useCart';
 import { Container } from './ui/Container';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
+import { ProductGallery } from './ProductGallery';
 
 type TabKey = 'description' | 'history' | 'specs';
 
@@ -21,12 +22,10 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const name = product.name[locale] || product.name.en;
   const images = product.images.length > 0 ? product.images : [];
-  const [active, setActive] = useState(0);
   const [tab, setTab] = useState<TabKey>('description');
 
   const canBuy =
     product.status !== 'out_of_stock' && product.status !== 'in_development';
-  const mainImage = images[active];
 
   const router = useRouter();
   const addItem = useCart((s) => s.addItem);
@@ -58,45 +57,15 @@ export function ProductDetail({ product }: { product: Product }) {
       <Container>
         {/* HERO */}
         <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-          {/* Left: image + gallery */}
-          <div className="min-w-0">
+          {/* Left: image + gallery (hover zoom + fullscreen lightbox) */}
+          {images.length > 0 ? (
+            <ProductGallery images={images} alt={name} />
+          ) : (
             <div
-              className="group relative aspect-[4/3] w-full overflow-hidden rounded-md border border-border bg-panel"
+              className="aspect-[4/3] w-full rounded-md border border-border bg-panel"
               style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
-            >
-              {mainImage ? (
-                <Image
-                  src={mainImage}
-                  alt={name}
-                  fill
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-contain p-3"
-                />
-              ) : null}
-            </div>
-
-            {images.length > 1 ? (
-              <div className="mt-5 flex gap-5 overflow-x-auto pb-1">
-                {images.slice(0, 5).map((img, i) => (
-                  <button
-                    key={img + i}
-                    type="button"
-                    onClick={() => setActive(i)}
-                    aria-label={`${name} — ${i + 1}`}
-                    aria-current={i === active}
-                    className={`relative aspect-[4/3] w-[180px] shrink-0 overflow-hidden rounded-[4px] border-2 bg-panel transition ${
-                      i === active
-                        ? 'border-accent'
-                        : 'border-transparent hover:brightness-110'
-                    }`}
-                  >
-                    <Image src={img} alt="" fill sizes="180px" className="object-contain p-1" />
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
+            />
+          )}
 
           {/* Right: purchase block */}
           <div className="flex min-w-0 flex-col">

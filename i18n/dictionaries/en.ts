@@ -214,6 +214,15 @@ const en = {
       generic: 'Could not submit your order. Please try again.',
     },
   },
+  gallery: {
+    zoomHint: 'Hover to zoom · click to enlarge',
+    openFullscreen: 'Open image fullscreen',
+    close: 'Close',
+    prev: 'Previous image',
+    next: 'Next image',
+    thumb: 'Image',
+    counter: 'of',
+  },
   notFound: {
     code: '404',
     title: 'Page not found',

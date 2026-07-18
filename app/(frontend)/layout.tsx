@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import '../globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { CartHydrator } from '@/components/CartHydrator';
 import { LocaleProvider } from '@/i18n/locale-context';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale } from '@/i18n/config';
@@ -54,6 +55,7 @@ export default async function RootLayout({
       <body className="flex min-h-full flex-col bg-bg font-body text-body">
         <ThemeProvider>
           <LocaleProvider initialLocale={initialLocale}>
+            <CartHydrator />
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />

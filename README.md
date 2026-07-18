@@ -68,8 +68,9 @@ Dictionaries live in `i18n/dictionaries/`; retrieve one with
 
 ## Conventions
 
-- Prices are stored as **EUR cents** (integers) and formatted for display
-  with `formatPrice()` from `lib/format.ts`.
+- Prices are stored as **decimal EUR** (`numeric(10,2)`, e.g. `499.99`) and
+  formatted for display with `formatPrice()` from `lib/format.ts`. Computed
+  totals go through `roundMoney()` to stay exact to the cent.
 - The `@/*` import alias maps to the project root.
 
 > Catalog and product pages are **not** implemented yet — this is the

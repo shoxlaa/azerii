@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import type { Product } from '@/types';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { formatPrice } from '@/lib/format';
+import { useCart } from '@/hooks/useCart';
 import { Container } from './ui/Container';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
@@ -26,8 +28,30 @@ export function ProductDetail({ product }: { product: Product }) {
     product.status !== 'out_of_stock' && product.status !== 'in_development';
   const mainImage = images[active];
 
-  // TODO: wire to a real cart hook (useCart) in the next step.
-  const handleCart = () => {};
+  const router = useRouter();
+  const addItem = useCart((s) => s.addItem);
+  const [added, setAdded] = useState(false);
+
+  const cartLine = () => ({
+    productId: product.id,
+    slug: product.slug,
+    name: product.name,
+    priceEur: product.priceEur,
+    image: images[0],
+    scale: product.scale,
+  });
+
+  /** "Add to cart" — stay on the page, confirm inline. */
+  const handleAddToCart = () => {
+    addItem(cartLine());
+    setAdded(true);
+  };
+
+  /** "Buy" — add and go straight to the cart. */
+  const handleBuy = () => {
+    addItem(cartLine());
+    router.push('/cart');
+  };
 
   return (
     <div className="py-10 md:py-14">
@@ -37,7 +61,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {/* Left: image + gallery */}
           <div className="min-w-0">
             <div
-              className="group relative h-[340px] overflow-hidden rounded-md border border-border bg-panel sm:h-[440px] md:h-[520px]"
+              className="group relative aspect-[4/3] w-full overflow-hidden rounded-md border border-border bg-panel"
               style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
             >
               {mainImage ? (
@@ -47,7 +71,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   fill
                   priority
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  className="object-contain p-3"
                 />
               ) : null}
             </div>
@@ -61,13 +85,13 @@ export function ProductDetail({ product }: { product: Product }) {
                     onClick={() => setActive(i)}
                     aria-label={`${name} — ${i + 1}`}
                     aria-current={i === active}
-                    className={`relative h-[110px] w-[180px] shrink-0 overflow-hidden rounded-[4px] border-2 transition ${
+                    className={`relative aspect-[4/3] w-[180px] shrink-0 overflow-hidden rounded-[4px] border-2 bg-panel transition ${
                       i === active
                         ? 'border-accent'
                         : 'border-transparent hover:brightness-110'
                     }`}
                   >
-                    <Image src={img} alt="" fill sizes="180px" className="object-cover" />
+                    <Image src={img} alt="" fill sizes="180px" className="object-contain p-1" />
                   </button>
                 ))}
               </div>
@@ -89,13 +113,34 @@ export function ProductDetail({ product }: { product: Product }) {
             <p className="text-price mt-6">{formatPrice(product.priceEur, locale)}</p>
 
             {canBuy ? (
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button variant="buy" onClick={handleCart} className="w-full sm:w-auto">
-                  {t.buy}
-                </Button>
-                <Button variant="cart" onClick={handleCart} className="w-full sm:w-auto">
-                  {dict.common.addToCart}
-                </Button>
+              <div className="mt-8">
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button
+                    variant="buy"
+                    onClick={handleBuy}
+                    data-testid="detail-buy"
+                    className="w-full sm:w-auto"
+                  >
+                    {t.buy}
+                  </Button>
+                  <Button
+                    variant="cart"
+                    onClick={handleAddToCart}
+                    data-testid="detail-add-to-cart"
+                    className="w-full sm:w-auto"
+                  >
+                    {dict.common.addToCart}
+                  </Button>
+                </div>
+                {added ? (
+                  <p
+                    aria-live="polite"
+                    data-testid="added-notice"
+                    className="mt-3 font-heading text-sm font-semibold uppercase tracking-wide text-accent-text"
+                  >
+                    ✓ {dict.cart.title}
+                  </p>
+                ) : null}
               </div>
             ) : (
               <p className="mt-8 font-heading text-sm font-semibold uppercase tracking-wide text-subtle">
@@ -175,7 +220,7 @@ export function ProductDetail({ product }: { product: Product }) {
             </p>
           </div>
           <div
-            className="relative h-[280px] overflow-hidden rounded-md sm:h-[340px]"
+            className="relative aspect-[4/3] w-full overflow-hidden rounded-md bg-panel"
             style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.35)' }}
           >
             {images[0] ? (
@@ -184,7 +229,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover"
+                className="object-contain p-3"
               />
             ) : null}
           </div>

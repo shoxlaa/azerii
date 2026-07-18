@@ -1,7 +1,10 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Locale, Product } from '@/types';
 import { formatPrice } from '@/lib/format';
+import { useCart } from '@/hooks/useCart';
 import { Badge } from './ui/Badge';
 import { CartIcon } from './icons';
 
@@ -21,6 +24,7 @@ export function ProductCard({
   scaleWord,
   addToCartLabel,
 }: ProductCardProps) {
+  const addItem = useCart((s) => s.addItem);
   const image = product.images[0];
   const name = product.name[locale] || product.name.en;
   // No purchase for out-of-stock or in-development items.
@@ -29,9 +33,11 @@ export function ProductCard({
   return (
     <div className="group flex flex-col overflow-hidden rounded-md border border-border bg-panel transition-colors hover:border-accent/50">
       {/* Image */}
+      {/* Fixed 4:3 slot keeps every card in a row the same height; the panel
+          background makes the letterbox bars from object-contain invisible. */}
       <Link
         href={`/catalog/${product.slug}`}
-        className="relative block aspect-[4/3] overflow-hidden bg-black/5 dark:bg-black/20"
+        className="relative block aspect-[4/3] overflow-hidden bg-panel"
       >
         {image ? (
           <Image
@@ -39,7 +45,7 @@ export function ProductCard({
             alt={name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 320px"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+            className="object-contain p-2"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-subtle">
@@ -70,6 +76,17 @@ export function ProductCard({
             <button
               type="button"
               aria-label={addToCartLabel}
+              data-testid="card-add-to-cart"
+              onClick={() =>
+                addItem({
+                  productId: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  priceEur: product.priceEur,
+                  image,
+                  scale: product.scale,
+                })
+              }
               className="flex h-9 w-9 items-center justify-center rounded-[4px] border border-border text-body transition-colors hover:border-accent hover:text-accent-text"
             >
               <CartIcon className="h-5 w-5" />

@@ -6,16 +6,27 @@ import type { Locale } from '@/types';
 import { CURRENCY } from '@/constants';
 
 /**
- * Format a price stored in EUR cents into a localized currency string.
+ * Round a monetary amount to 2 decimals.
  *
- * @param cents  Price in EUR cents (e.g. 4990).
- * @param locale UI locale controlling number/grouping format.
- * @returns e.g. "€49.90" (en) or "49,90 €" (ru).
+ * Prices are decimal euros, so sums and products can pick up binary
+ * floating-point noise (e.g. 499.99 * 3 → 1499.9700000000003). Computed totals
+ * go through this so stored and compared values stay exact to the cent.
  */
-export function formatPrice(cents: number, locale: Locale = 'en'): string {
+export function roundMoney(amount: number): number {
+  return Math.round((amount + Number.EPSILON) * 100) / 100;
+}
+
+/**
+ * Format a price in EUR into a localized currency string.
+ *
+ * @param amount Price in euros (e.g. 499.99).
+ * @param locale UI locale controlling number/grouping format.
+ * @returns e.g. "€499.99" (en) or "499,99 €" (ru).
+ */
+export function formatPrice(amount: number, locale: Locale = 'en'): string {
   const intlLocale = locale === 'ru' ? 'ru-RU' : 'en-IE';
   return new Intl.NumberFormat(intlLocale, {
     style: 'currency',
     currency: CURRENCY,
-  }).format(cents / 100);
+  }).format(amount);
 }

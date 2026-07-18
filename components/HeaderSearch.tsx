@@ -175,9 +175,9 @@ export function HeaderSearch() {
                           onClick={() => goToProduct(r.slug)}
                           className="flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-black/5 dark:hover:bg-white/5"
                         >
-                          <span className="relative h-10 w-12 shrink-0 overflow-hidden rounded bg-black/5 dark:bg-black/20">
+                          <span className="relative h-10 w-12 shrink-0 overflow-hidden rounded bg-bg">
                             {r.image ? (
-                              <Image src={r.image} alt={name} fill sizes="48px" className="object-cover" />
+                              <Image src={r.image} alt={name} fill sizes="48px" className="object-contain" />
                             ) : null}
                           </span>
                           <span className="min-w-0 flex-1">

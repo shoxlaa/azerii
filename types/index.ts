@@ -44,6 +44,9 @@ export type TechType = 'lazer' | '3d' | 'rezin' | 'litnik';
  */
 export type CategoryType = 'tank' | 'chassis' | 'tracks' | 'armored_car';
 
+/** How the order is delivered. */
+export type ShippingMethod = 'standard' | 'express' | 'pickup';
+
 /** Order lifecycle status. */
 export type OrderStatus =
   | 'pending'
@@ -58,7 +61,7 @@ export type Localized<T = string> = Record<Locale, T>;
 
 /**
  * A single sellable product (scale model).
- * Prices are stored in EUR cents to avoid floating-point rounding issues.
+ * Prices are stored in EUR with a decimal part (e.g. 499.99).
  */
 export interface Product {
   id: string;
@@ -70,7 +73,7 @@ export interface Product {
   category: CategoryType;
   tech: TechType;
   status: ProductStatus;
-  /** Price in EUR cents (e.g. 4990 = €49.90). */
+  /** Price in EUR (e.g. 499.99). */
   priceEur: number;
   /** Model scale, e.g. "1/35", "1/72". */
   scale: string;
@@ -82,12 +85,30 @@ export interface Product {
   updatedAt: string;
 }
 
+/**
+ * A line item held in the client-side cart.
+ * `priceEur` is a display snapshot only — the server re-reads authoritative
+ * prices from the catalog when an order is submitted.
+ */
+export interface CartItem {
+  productId: string;
+  slug: string;
+  /** Localized display name. */
+  name: Localized;
+  /** Unit price in EUR (display snapshot). */
+  priceEur: number;
+  /** Primary image URL, if the product has one. */
+  image?: string;
+  scale?: string;
+  quantity: number;
+}
+
 /** A single line item inside an order. */
 export interface OrderItem {
   productId: string;
   /** Product name snapshot at time of purchase (localized). */
   name: Localized;
-  /** Unit price in EUR cents at time of purchase. */
+  /** Unit price in EUR at time of purchase. */
   unitPriceEur: number;
   quantity: number;
 }
@@ -105,15 +126,17 @@ export interface Customer {
 
 /**
  * A customer order.
- * `totalEur` is the sum of all line items in EUR cents.
+ * `totalEur` is the sum of all line items in EUR.
  */
 export interface Order {
   id: string;
   items: OrderItem[];
   customer: Customer;
   status: OrderStatus;
-  /** Order total in EUR cents. */
+  /** Order total in EUR. */
   totalEur: number;
+  /** How the order should be delivered. */
+  shipping: ShippingMethod;
   /** Locale the customer used when placing the order. */
   locale: Locale;
   comment?: string;

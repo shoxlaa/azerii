@@ -124,7 +124,7 @@ export default function StyleguidePage() {
               <p className="font-mono text-xs text-subtle">
                 Цена · 42px / accent
               </p>
-              <p className="text-price mt-2">{formatPrice(49900, 'en')}</p>
+              <p className="text-price mt-2">{formatPrice(499.99, 'en')}</p>
             </div>
             <div>
               <p className="font-mono text-xs text-subtle">

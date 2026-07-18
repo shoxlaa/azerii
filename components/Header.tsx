@@ -6,18 +6,21 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
+import { useCart, useCartHydrated } from '@/hooks/useCart';
 import { ThemeToggle } from './ThemeToggle';
 import { HeaderSearch } from './HeaderSearch';
 import { BurgerIcon, CartIcon, CloseIcon } from './icons';
-
-/** Placeholder cart item count (wired to real cart state later). */
-const CART_COUNT = 0;
 
 export function Header() {
   const pathname = usePathname();
   const { locale, toggleLocale } = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
   const dict = getDictionary(locale);
+
+  // Badge stays hidden until the persisted cart is read, so SSR and the first
+  // client render agree.
+  const cartHydrated = useCartHydrated();
+  const cartCount = useCart((s) => s.items.reduce((n, i) => n + i.quantity, 0));
 
   const navItems = [
     { href: '/', label: dict.nav.home },
@@ -86,14 +89,22 @@ export function Header() {
 
           <HeaderSearch />
 
-          <button className="relative text-body transition-colors hover:text-accent-text" aria-label="Корзина">
+          <Link
+            href="/cart"
+            className="relative text-body transition-colors hover:text-accent-text"
+            aria-label={dict.cart.title}
+            data-testid="cart-link"
+          >
             <CartIcon className="h-6 w-6" />
-            {CART_COUNT > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-cream">
-                {CART_COUNT}
+            {cartHydrated && cartCount > 0 && (
+              <span
+                data-testid="cart-count"
+                className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-cream"
+              >
+                {cartCount}
               </span>
             )}
-          </button>
+          </Link>
 
           {/* Burger (mobile/tablet) */}
           <button

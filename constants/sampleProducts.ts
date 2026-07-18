@@ -34,17 +34,17 @@ function make(
 }
 
 export const SAMPLE_PRODUCTS: Product[] = [
-  make('somua-s35', 'SOMUA S-35', 'tank', 'litnik', 'in_stock', 49900, [
+  make('somua-s35', 'SOMUA S-35', 'tank', 'litnik', 'in_stock', 499.0, [
     '/hero/somua-s35.jpg',
     '/hero/hero-b1-reims.jpg',
     '/hero/hero-t28-polygon.jpg',
     '/hero/hero-german-field.jpg',
   ]),
-  make('b1-bis', 'B1 early', 'tank', 'rezin', 'coming_soon', 65000, ['/hero/hero-b1-reims.jpg']),
-  make('Т-29-5', 'Т-29-5', 'tank', '3d', 'in_stock', 72000, ['/hero/hero-t28-polygon.jpg']),
-  make('nb-fz', 'Nb.Fz.', 'tank', 'lazer', 'limited', 89000, ['/hero/hero-german-field.jpg']),
-  make('ba-6', 'БА-6', 'armored_car', 'litnik', 'out_of_stock', 54000, ['/hero/somua-s35.jpg']),
-  make('t-26-1938', 'T-26 (1938)', 'tank', '3d', 'in_stock', 48000, ['/hero/hero-t28-polygon.jpg']),
-  make('t-26-chassis', 'Шасси T-26', 'chassis', 'rezin', 'planned', 28000, ['/hero/hero-b1-reims.jpg']),
-  make('t-26-tracks', 'Траки T-26', 'tracks', 'lazer', 'in_development', 12000, ['/hero/hero-german-field.jpg']),
+  make('b1-bis', 'B1 early', 'tank', 'rezin', 'coming_soon', 650.0, ['/hero/hero-b1-reims.jpg']),
+  make('t-29-5', 'Т-29-5', 'tank', '3d', 'in_stock', 720.0, ['/hero/hero-t28-polygon.jpg']),
+  make('nb-fz', 'Nb.Fz.', 'tank', 'lazer', 'limited', 890.0, ['/hero/hero-german-field.jpg']),
+  make('ba-6', 'БА-6', 'armored_car', 'litnik', 'out_of_stock', 540.0, ['/hero/somua-s35.jpg']),
+  make('t-26-1938', 'T-26 (1938)', 'tank', '3d', 'in_stock', 480.0, ['/hero/hero-t28-polygon.jpg']),
+  make('t-26-chassis', 'Шасси T-26', 'chassis', 'rezin', 'planned', 280.0, ['/hero/hero-b1-reims.jpg']),
+  make('t-26-tracks', 'Траки T-26', 'tracks', 'lazer', 'in_development', 120.0, ['/hero/hero-german-field.jpg']),
 ];

@@ -14,6 +14,22 @@ const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 /**
+ * Payload needs these at runtime. Missing values surface as a generic
+ * "There was an error initializing Payload" (500 on /admin and /api/*), so
+ * name them explicitly in the logs. Deliberately logged, not thrown: throwing
+ * here would fail the whole build instead of just the Payload routes.
+ */
+const missingEnv = (['PAYLOAD_SECRET', 'DATABASE_URI'] as const).filter(
+  (key) => !process.env[key],
+);
+if (missingEnv.length > 0) {
+  console.error(
+    `[payload] Missing required environment variable(s): ${missingEnv.join(', ')}. ` +
+      'Payload cannot initialize — set them in your hosting environment settings.',
+  );
+}
+
+/**
  * Supabase Storage (S3-compatible) is enabled only when S3_BUCKET is set.
  * Without it, uploads fall back to local disk so the admin works pre-config.
  */

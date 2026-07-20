@@ -20,6 +20,21 @@ const dirname = path.dirname(filename);
  * name them explicitly in the logs. Deliberately logged, not thrown: throwing
  * here would fail the whole build instead of just the Payload routes.
  */
+/**
+ * Pool size derived from the connection string, so code and environment cannot
+ * drift apart.
+ *
+ * Environment changes on Vercel only take effect on the next deployment, so a
+ * running deployment can pair a new pool size with the old URL. Pairing a large
+ * pool with the *session* pooler (5432) exhausts its 15-client ceiling
+ * instantly and every Payload route starts failing — which is exactly what
+ * happened. Reading the port makes each configuration self-consistent.
+ */
+function defaultPoolMax(): number {
+  // 6543 = transaction pooler: connections are held only for a transaction.
+  return (process.env.DATABASE_URI ?? '').includes(':6543/') ? 10 : 3;
+}
+
 const missingEnv = (['PAYLOAD_SECRET', 'DATABASE_URI'] as const).filter(
   (key) => !process.env[key],
 );
@@ -83,7 +98,7 @@ export default buildConfig({
      */
     pool: {
       connectionString: process.env.DATABASE_URI || '',
-      max: Number(process.env.DATABASE_POOL_MAX ?? 10),
+      max: Number(process.env.DATABASE_POOL_MAX ?? defaultPoolMax()),
       // Hand connections back to the pooler promptly rather than idling on them.
       idleTimeoutMillis: 10_000,
       // Fail fast instead of queueing forever if the pooler is saturated;

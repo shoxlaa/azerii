@@ -28,6 +28,24 @@ function safeReason(err: unknown): string {
   return message.replace(/postgres(ql)?:\/\/\S+/gi, '[redacted]').slice(0, 200);
 }
 
+/**
+ * Which Supabase pooler this deployment is actually talking to.
+ *
+ * Answers "is production on the transaction pooler?" without opening the
+ * Vercel dashboard — the previous outage came from the deployment still using
+ * the old URL after the variable was changed. Reports the mode only: no host,
+ * port or credentials, since this endpoint is public.
+ */
+function poolerMode(): { mode: 'transaction' | 'session' | 'unknown'; max: number } {
+  const uri = process.env.DATABASE_URI ?? '';
+  const mode = uri.includes(':6543/')
+    ? 'transaction'
+    : uri.includes(':5432/')
+      ? 'session'
+      : 'unknown';
+  return { mode, max: Number(process.env.DATABASE_POOL_MAX ?? (mode === 'transaction' ? 10 : 3)) };
+}
+
 export async function GET() {
   const startedAt = Date.now();
 
@@ -37,7 +55,7 @@ export async function GET() {
     await payload.count({ collection: 'products' });
 
     return NextResponse.json(
-      { status: 'ok', db: { ok: true, ms: Date.now() - startedAt } },
+      { status: 'ok', db: { ok: true, ms: Date.now() - startedAt }, pool: poolerMode() },
       { status: 200, headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (err) {
@@ -47,6 +65,7 @@ export async function GET() {
       {
         status: 'degraded',
         db: { ok: false, ms: Date.now() - startedAt, error: safeReason(err) },
+        pool: poolerMode(),
       },
       { status: 503, headers: { 'Cache-Control': 'no-store' } },
     );

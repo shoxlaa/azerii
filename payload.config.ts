@@ -68,22 +68,39 @@ export default buildConfig({
     defaultLocale: 'en',
   },
   db: postgresAdapter({
+    /**
+     * Expects Supabase's TRANSACTION pooler (port 6543), not the session
+     * pooler (5432). Session mode holds a server connection for the whole life
+     * of a client and caps everyone — production plus local development — at
+     * 15 clients, which serverless exhausted constantly (`EMAXCONNSESSION`,
+     * then 500s from every Payload route). Transaction mode only holds a
+     * connection for the duration of a transaction, so instances share far
+     * more effectively.
+     *
+     * Safe here because nothing in this project needs session state: Payload
+     * and drizzle issue only *unnamed* prepared statements, and there is no
+     * LISTEN/NOTIFY, advisory locking, SET, temp table or cursor usage.
+     */
     pool: {
       connectionString: process.env.DATABASE_URI || '',
-      /**
-       * Supabase's session pooler accepts only 15 client connections in total,
-       * shared between local development and every serverless instance on
-       * Vercel. Postgres' default pool (10 per instance) exhausts that almost
-       * immediately — the symptom is `EMAXCONNSESSION: max clients reached`
-       * and a 500 from anything touching Payload. Keep each instance small.
-       */
-      max: Number(process.env.DATABASE_POOL_MAX ?? 3),
-      // Return connections to the pooler quickly instead of holding them idle.
+      max: Number(process.env.DATABASE_POOL_MAX ?? 10),
+      // Hand connections back to the pooler promptly rather than idling on them.
       idleTimeoutMillis: 10_000,
+      // Fail fast instead of queueing forever if the pooler is saturated;
+      // lib/data.ts retries transient failures.
+      connectionTimeoutMillis: 10_000,
       // Supabase's pooler presents a certificate that Node can't verify against
       // the system trust store; accept it (TLS is still used, just not verified).
       ssl: { rejectUnauthorized: false },
     },
+    /**
+     * Dev-time schema push runs drizzle-kit introspection, which times out
+     * through the pooler (the reason migrations/*.sql are written by hand).
+     * Turning it off stops Payload retrying it on every boot.
+     */
+    push: false,
+    // Creating databases is not possible through a pooler.
+    disableCreateDatabase: true,
   }),
   sharp,
   plugins: [...storagePlugins],

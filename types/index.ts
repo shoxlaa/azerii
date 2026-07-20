@@ -44,6 +44,56 @@ export type TechType = 'lazer' | '3d' | 'rezin' | 'litnik';
  */
 export type CategoryType = 'tank' | 'chassis' | 'tracks' | 'armored_car';
 
+/**
+ * Category of a museum exhibit.
+ * The museum shows finished models built by children — these are exhibits,
+ * not merchandise, so they have their own categories independent of
+ * `CategoryType` (which classifies sellable products).
+ */
+export type MuseumCategory =
+  | 'cars'
+  | 'armor'
+  | 'aviation'
+  | 'miniatures'
+  | 'railway'
+  | 'ships';
+
+/** Model scales offered across the site. */
+export type ModelScale =
+  | '1:8'
+  | '1:16'
+  | '1:18'
+  | '1:24'
+  | '1:35'
+  | '1:43'
+  | '1:64'
+  | '1:72'
+  | '1:144';
+
+/**
+ * A single museum exhibit — a finished, assembled model on display.
+ * Not a product: it has no price, status or stock.
+ */
+export interface MuseumItem {
+  id: string;
+  /** Localized display title, e.g. "Messerschmitt Bf 109Z Zwilling". */
+  title: Localized;
+  /** Localized free-form text: the model's history, who built it, facts. */
+  description: Localized;
+  category: MuseumCategory;
+  /** Optional — not every exhibit records a scale. */
+  scale?: ModelScale;
+  /** Image URLs; the first entry is the main photo. */
+  images: string[];
+  /**
+   * Slug of the catalog product this kit corresponds to, when we sell it.
+   * Undefined when the exhibit has no counterpart on sale.
+   */
+  productSlug?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** How the order is delivered. */
 export type ShippingMethod = 'standard' | 'express' | 'pickup';
 

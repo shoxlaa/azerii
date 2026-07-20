@@ -7,6 +7,8 @@
 
 import type {
   CategoryType,
+  ModelScale,
+  MuseumCategory,
   ProductStatus,
   TechType,
 } from '@/types';
@@ -56,6 +58,29 @@ export const CATEGORY_TYPES: CategoryType[] = [
   'chassis',
   'tracks',
   'armored_car',
+];
+
+/** Museum exhibit categories in display order. */
+export const MUSEUM_CATEGORIES: MuseumCategory[] = [
+  'cars',
+  'armor',
+  'aviation',
+  'miniatures',
+  'railway',
+  'ships',
+];
+
+/** Selectable model scales, largest first. */
+export const MODEL_SCALES: ModelScale[] = [
+  '1:8',
+  '1:16',
+  '1:18',
+  '1:24',
+  '1:35',
+  '1:43',
+  '1:64',
+  '1:72',
+  '1:144',
 ];
 
 /**

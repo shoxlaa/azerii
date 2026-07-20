@@ -8,6 +8,7 @@ import sharp from 'sharp';
 
 import { Products } from './collections/Products';
 import { Media } from './collections/Media';
+import { MuseumItems } from './collections/MuseumItems';
 import { Users } from './collections/Users';
 
 const filename = fileURLToPath(import.meta.url);
@@ -56,7 +57,7 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
   },
-  collections: [Products, Media, Users],
+  collections: [Products, MuseumItems, Media, Users],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -69,6 +70,16 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      /**
+       * Supabase's session pooler accepts only 15 client connections in total,
+       * shared between local development and every serverless instance on
+       * Vercel. Postgres' default pool (10 per instance) exhausts that almost
+       * immediately — the symptom is `EMAXCONNSESSION: max clients reached`
+       * and a 500 from anything touching Payload. Keep each instance small.
+       */
+      max: Number(process.env.DATABASE_POOL_MAX ?? 3),
+      // Return connections to the pooler quickly instead of holding them idle.
+      idleTimeoutMillis: 10_000,
       // Supabase's pooler presents a certificate that Node can't verify against
       // the system trust store; accept it (TLS is still used, just not verified).
       ssl: { rejectUnauthorized: false },

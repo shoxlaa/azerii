@@ -25,6 +25,7 @@ export function Header() {
   const navItems = [
     { href: '/', label: dict.nav.home },
     { href: '/catalog', label: dict.nav.catalog },
+    { href: '/museum', label: dict.nav.museum },
     { href: '/about', label: dict.nav.about },
     { href: '/contact', label: dict.nav.contact },
   ];

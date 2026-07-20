@@ -1,19 +1,25 @@
 import 'server-only';
 
 /**
- * Data client — reads catalog data from Payload via the Local API.
+ * Data client — reads catalog and museum data from Payload via the Local API.
  *
- * The public function signatures are unchanged (`getProducts`,
- * `getProductBySlug`) so storefront pages don't need to change.
- * Payload documents are mapped to our domain `Product` type.
- *
+ * Payload documents are mapped to our domain types (`Product`, `MuseumItem`).
  * If Payload/DB is not configured yet, the functions degrade gracefully
  * (empty result) so the storefront never crashes before setup.
  */
 
 import { getPayload } from 'payload';
 import config from '@payload-config';
-import type { CategoryType, Locale, Product, ProductStatus, TechType } from '@/types';
+import type {
+  CategoryType,
+  Locale,
+  ModelScale,
+  MuseumCategory,
+  MuseumItem,
+  Product,
+  ProductStatus,
+  TechType,
+} from '@/types';
 
 /** Minimal shape of a Payload product document we rely on. */
 interface PayloadProduct {
@@ -96,6 +102,73 @@ export async function getProducts(): Promise<Product[]> {
     return (docs as unknown as PayloadProduct[]).map(mapProduct);
   } catch (err) {
     console.error('[data] getProducts failed (is DATABASE_URI set?):', err);
+    return [];
+  }
+}
+
+/** Minimal shape of a Payload museum document we rely on. */
+interface PayloadMuseumItem {
+  id: string | number;
+  title: Record<Locale, string> | string;
+  description?: Record<Locale, unknown> | unknown;
+  category: MuseumCategory;
+  scale?: ModelScale | null;
+  mainImage?: { url?: string | null } | string | number | null;
+  gallery?: Array<{ url?: string | null } | string | number> | null;
+  /** Populated at depth >= 1 when the exhibit links to a product. */
+  product?: { catalogCode?: string | null } | string | number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Pull a usable URL off a populated upload field. */
+function uploadUrl(value: unknown): string | null {
+  return typeof value === 'object' && value
+    ? ((value as { url?: string | null }).url ?? null)
+    : null;
+}
+
+/** Map a Payload museum document to our domain `MuseumItem`. */
+function mapMuseumItem(doc: PayloadMuseumItem): MuseumItem {
+  // Main photo first, then any extra gallery shots.
+  const images = [
+    uploadUrl(doc.mainImage),
+    ...(doc.gallery ?? []).map(uploadUrl),
+  ].filter((url): url is string => Boolean(url));
+
+  const productSlug =
+    typeof doc.product === 'object' && doc.product
+      ? ((doc.product as { catalogCode?: string | null }).catalogCode ?? undefined)
+      : undefined;
+
+  return {
+    id: String(doc.id),
+    title: toLocalized(doc.title),
+    description: toLocalized(doc.description, lexicalToPlain),
+    category: doc.category,
+    scale: doc.scale ?? undefined,
+    images,
+    productSlug: productSlug || undefined,
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
+  };
+}
+
+/** Return all museum exhibits, newest first. */
+export async function getMuseumItems(): Promise<MuseumItem[]> {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: 'museum-items',
+      locale: 'all',
+      // depth 1 populates mainImage/gallery uploads and the product relation.
+      depth: 1,
+      limit: 500,
+      sort: '-createdAt',
+    });
+    return (docs as unknown as PayloadMuseumItem[]).map(mapMuseumItem);
+  } catch (err) {
+    console.error('[data] getMuseumItems failed (is DATABASE_URI set?):', err);
     return [];
   }
 }

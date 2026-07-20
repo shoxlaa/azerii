@@ -244,6 +244,12 @@ const en = {
     thumb: 'Image',
     counter: 'of',
   },
+  errorPage: {
+    title: 'Something went wrong',
+    text: 'The page could not be loaded — this is usually temporary. Please try again.',
+    retry: 'Try again',
+    browseCatalog: 'Go to catalog',
+  },
   notFound: {
     code: '404',
     title: 'Page not found',

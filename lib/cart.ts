@@ -16,6 +16,11 @@ export interface ResolvedCartItem extends CartItem {
 
 /** Merge live catalog data into stored cart lines, keyed by slug. */
 export function resolveCartItems(items: CartItem[], catalog: Product[]): ResolvedCartItem[] {
+  // No catalog at all means we could not load it (e.g. a brief database
+  // outage), not that every product vanished. Keep the stored snapshot rather
+  // than telling the customer their whole cart is unavailable.
+  if (catalog.length === 0) return items.map((item) => ({ ...item, available: true }));
+
   const bySlug = new Map(catalog.map((p) => [p.slug, p]));
 
   return items.map((item) => {

@@ -19,11 +19,25 @@ function decodeSlug(raw: string): string {
   }
 }
 
-/** Resolve a product by slug: Payload first, then demo fallback. */
+/**
+ * Resolve a product by slug.
+ *
+ * A database failure is deliberately allowed to propagate: previously the
+ * error was swallowed, the lookup fell through to the demo list, the real
+ * slug was missing from it, and a live product answered 404. Now an outage
+ * surfaces as an error page the visitor can retry, and only a genuinely
+ * unknown slug reaches notFound().
+ *
+ * The demo list stays a development convenience — in production it must never
+ * stand in for real catalog data.
+ */
 async function getProduct(slug: string): Promise<Product | null> {
   const product = await getProductBySlug(slug);
   if (product) return product;
-  return SAMPLE_PRODUCTS.find((p) => p.slug === slug) ?? null;
+  if (process.env.NODE_ENV !== 'production') {
+    return SAMPLE_PRODUCTS.find((p) => p.slug === slug) ?? null;
+  }
+  return null;
 }
 
 // No generateStaticParams: the root layout reads the locale cookie, so these

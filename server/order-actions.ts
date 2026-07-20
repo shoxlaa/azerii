@@ -14,7 +14,6 @@
 
 import type { Customer, Locale, OrderItem } from '@/types';
 import { getProducts } from '@/lib/data';
-import { SAMPLE_PRODUCTS } from '@/constants/sampleProducts';
 import { validateCheckout, isValid, type CheckoutErrors, type CheckoutInput } from '@/lib/checkout';
 import { createOrder } from './orders';
 
@@ -51,9 +50,10 @@ export async function submitOrder(input: SubmitOrderInput): Promise<SubmitOrderR
       return { ok: false, error: 'cart' };
     }
 
-    // Authoritative catalog: real products, else the demo fallback.
-    const products = await getProducts();
-    const catalog = products.length > 0 ? products : SAMPLE_PRODUCTS;
+    // Authoritative catalog — the only source of prices.
+    // Throws if the DB is unreachable; submitOrder's catch turns that into a
+    // retryable error instead of silently pricing against demo data.
+    const catalog = await getProducts();
 
     const items: OrderItem[] = [];
     for (const line of input.items) {

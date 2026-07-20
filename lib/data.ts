@@ -10,6 +10,7 @@ import 'server-only';
 
 import { getPayload } from 'payload';
 import config from '@payload-config';
+import { SAMPLE_PRODUCTS } from '@/constants/sampleProducts';
 import type {
   CategoryType,
   Locale,
@@ -20,6 +21,55 @@ import type {
   ProductStatus,
   TechType,
 } from '@/types';
+
+/**
+ * Connection failures worth retrying rather than reporting as "no data".
+ * Supabase's pooler rejects new clients once its 15 session slots are busy;
+ * slots free up in milliseconds, so a short retry almost always succeeds.
+ */
+const TRANSIENT_DB_ERROR =
+  /EMAXCONNSESSION|max clients|too many clients|ETIMEDOUT|ECONNRESET|ECONNREFUSED|Connection terminated/i;
+
+/**
+ * Flatten an error and its `cause` chain into one string.
+ *
+ * The driver wraps failures as `Failed query: select …` and keeps the real
+ * reason (`EMAXCONNSESSION`, `ETIMEDOUT`, …) in a nested `cause`, so matching
+ * on the top-level message alone silently misses every transient error.
+ */
+function describeError(err: unknown, depth = 0): string {
+  if (!err || depth > 5) return '';
+  if (err instanceof Error) {
+    const cause = (err as Error & { cause?: unknown }).cause;
+    return `${err.message} ${describeError(cause, depth + 1)}`;
+  }
+  return String(err);
+}
+
+/**
+ * Run a database read, retrying briefly on transient connection errors.
+ *
+ * Throws if the database is genuinely unreachable. That matters: swallowing
+ * the error and returning "nothing" made a real product look missing, and the
+ * product page turned that into a 404 for an item that exists.
+ */
+async function withRetry<T>(label: string, run: () => Promise<T>, attempts = 4): Promise<T> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await run();
+    } catch (err) {
+      lastError = err;
+      if (!TRANSIENT_DB_ERROR.test(describeError(err)) || attempt === attempts) break;
+      console.warn(`[data] ${label}: transient DB error, retrying (${attempt}/${attempts - 1})`);
+      // Back off increasingly; pooler slots free up within a few hundred ms.
+      await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+    }
+  }
+
+  throw lastError;
+}
 
 /** Minimal shape of a Payload product document we rely on. */
 interface PayloadProduct {
@@ -89,9 +139,9 @@ function mapProduct(doc: PayloadProduct): Product {
   };
 }
 
-/** Return all products. */
+/** Return all products. Throws if the database cannot be reached. */
 export async function getProducts(): Promise<Product[]> {
-  try {
+  return withRetry('getProducts', async () => {
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: 'products',
@@ -100,10 +150,7 @@ export async function getProducts(): Promise<Product[]> {
       limit: 1000,
     });
     return (docs as unknown as PayloadProduct[]).map(mapProduct);
-  } catch (err) {
-    console.error('[data] getProducts failed (is DATABASE_URI set?):', err);
-    return [];
-  }
+  });
 }
 
 /** Minimal shape of a Payload museum document we rely on. */
@@ -154,9 +201,9 @@ function mapMuseumItem(doc: PayloadMuseumItem): MuseumItem {
   };
 }
 
-/** Return all museum exhibits, newest first. */
+/** Return all museum exhibits, newest first. Throws if the DB is unreachable. */
 export async function getMuseumItems(): Promise<MuseumItem[]> {
-  try {
+  return withRetry('getMuseumItems', async () => {
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: 'museum-items',
@@ -167,15 +214,45 @@ export async function getMuseumItems(): Promise<MuseumItem[]> {
       sort: '-createdAt',
     });
     return (docs as unknown as PayloadMuseumItem[]).map(mapMuseumItem);
+  });
+}
+
+/**
+ * Catalog for pages that must still render during a brief database outage
+ * (listings, cart and checkout summaries).
+ *
+ * Returns an empty catalog rather than failing the whole page. Demo products
+ * stand in only during development — in production they would be fake
+ * inventory a customer could add to the cart and order.
+ */
+export async function getProductsSafe(): Promise<Product[]> {
+  try {
+    return await getProducts();
   } catch (err) {
-    console.error('[data] getMuseumItems failed (is DATABASE_URI set?):', err);
+    console.error('[data] catalog unavailable, rendering without it:', err);
+    return process.env.NODE_ENV === 'production' ? [] : SAMPLE_PRODUCTS;
+  }
+}
+
+/** Museum exhibits for pages that should degrade to an empty gallery. */
+export async function getMuseumItemsSafe(): Promise<MuseumItem[]> {
+  try {
+    return await getMuseumItems();
+  } catch (err) {
+    console.error('[data] museum unavailable, rendering without it:', err);
     return [];
   }
 }
 
-/** Return a single product by slug (catalogCode), or null if not found. */
+/**
+ * Return a single product by slug (catalogCode).
+ *
+ * `null` means the product genuinely does not exist. A database failure throws
+ * instead — the caller must not mistake an outage for a missing product and
+ * answer 404.
+ */
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  try {
+  return withRetry('getProductBySlug', async () => {
     const payload = await getPayload({ config });
     const { docs } = await payload.find({
       collection: 'products',
@@ -186,8 +263,5 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     });
     const doc = (docs as unknown as PayloadProduct[])[0];
     return doc ? mapProduct(doc) : null;
-  } catch (err) {
-    console.error('[data] getProductBySlug failed (is DATABASE_URI set?):', err);
-    return null;
-  }
+  });
 }

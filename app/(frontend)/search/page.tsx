@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { SearchView } from '@/components/SearchView';
-import { getProducts } from '@/lib/data';
-import { SAMPLE_PRODUCTS } from '@/constants/sampleProducts';
+import { getProductsSafe } from '@/lib/data';
 import { searchProducts } from '@/lib/search';
 
 export const metadata: Metadata = {
@@ -16,9 +15,7 @@ export default async function SearchPage({
   const { q } = await searchParams;
   const query = (q ?? '').trim();
 
-  // Real products from Payload; fall back to demo data until the catalog is populated.
-  const products = await getProducts();
-  const items = products.length > 0 ? products : SAMPLE_PRODUCTS;
+  const items = await getProductsSafe();
   const results = query ? searchProducts(items, query) : [];
 
   return <SearchView query={query} results={results} />;

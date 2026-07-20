@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { MuseumView } from '@/components/MuseumView';
-import { getMuseumItems } from '@/lib/data';
+import { getMuseumItemsSafe } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Музей — AZERII',
@@ -10,6 +10,6 @@ export const metadata: Metadata = {
 export default async function MuseumPage() {
   // No demo fallback here: an empty museum shows its empty state rather than
   // inventing exhibits that do not exist.
-  const items = await getMuseumItems();
+  const items = await getMuseumItemsSafe();
   return <MuseumView items={items} />;
 }

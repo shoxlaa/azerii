@@ -26,7 +26,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```
 azerii/
-├── app/            # Routes & pages (App Router)
+├── app/            # Routes & pages (App Router) — (frontend) and (payload) groups
+├── collections/    # Payload CMS collections
 ├── components/     # Reusable UI components
 ├── constants/      # Constants: colors, product statuses, tech types, menu, socials
 ├── hooks/          # Custom React hooks
@@ -35,17 +36,26 @@ azerii/
 ├── server/         # Server-only logic: orders, contact form, mail
 ├── types/          # TypeScript types: Product, Category, Order, Locale, …
 ├── public/         # Static assets
-└── proxy.ts        # Locale handling & redirects (stub; Next 16 replaces middleware)
+├── payload.config.ts  # Payload CMS config (Postgres, S3 storage, Lexical)
+└── proxy.ts        # Locale cookie handling (Next 16 replaces middleware)
 ```
 
 > **Note on `proxy.ts`:** Next.js 16 deprecated the `middleware` file
 > convention and renamed it to **`proxy`** (exported function `proxy`,
 > defaulting to the Node.js runtime). This project uses `proxy.ts`
 > accordingly.
+>
+> It seeds the locale cookie with `DEFAULT_LOCALE` on the first visit (or when
+> the stored value is invalid) so the language switcher's choice survives
+> reloads. The locale is **not** reflected in the URL and nothing is
+> redirected — the cookie is the only carrier.
 
 ### Folder details
 
-- **`app/`** — App Router entry point. Layouts, pages and route handlers.
+- **`app/`** — App Router entry point. Two route groups: `(frontend)` for the
+  storefront and `(payload)` for the CMS admin UI, REST and GraphQL handlers.
+- **`collections/`** — Payload CMS collections: `Products`, `Orders`, `Users`,
+  `Media`, `MuseumItems` and `DailyVisits`.
 - **`components/`** — Presentational, reusable components (e.g. `Badge`).
 - **`constants/`** — Single source of truth for brand colors, the list of
   product statuses and their badge colors, tech types, categories, the
@@ -73,5 +83,15 @@ Dictionaries live in `i18n/dictionaries/`; retrieve one with
   totals go through `roundMoney()` to stay exact to the cent.
 - The `@/*` import alias maps to the project root.
 
-> Catalog and product pages are **not** implemented yet — this is the
-> scaffold only.
+## Status
+
+The storefront is implemented end to end:
+
+- **Catalog** — listing at `app/(frontend)/catalog/` and product pages at
+  `catalog/[slug]/`, backed by `getProductsSafe()` from `lib/data.ts`.
+- **Cart & checkout** — `useCart` (Zustand, persisted) with `CartView`,
+  `CheckoutForm` and `validateCheckout()`.
+- **Orders** — `createOrder()` in `server/orders.ts` computes the total,
+  persists the order and sends buyer and seller notification e-mails,
+  recording the delivery outcome on the order.
+- **Museum, search, contact** and the **styleguide** page are live.

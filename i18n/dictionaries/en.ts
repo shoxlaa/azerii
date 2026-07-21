@@ -3,6 +3,7 @@ const en = {
   nav: {
     home: 'Home',
     catalog: 'Catalog',
+    history: 'History',
     museum: 'Museum',
     about: 'About',
     contact: 'Contact',
@@ -221,17 +222,13 @@ const en = {
       generic: 'Could not submit your order. Please try again.',
     },
   },
-  museum: {
-    title: 'Museum',
-    lead: 'Finished models built by our modellers.',
-    /** Title wall above the history ribbon. */
-    intro: {
-      kicker: 'AZERII MUSEUM',
-      title: 'History of Armor',
-      lead: 'The machines we rebuild at 1:16, in the order they entered service.',
-    },
+  /** /history — the timeline of the machines we rebuild. */
+  historyPage: {
+    kicker: 'AZERII MUSEUM',
+    title: 'History of Armor',
+    lead: 'The machines we rebuild at 1:16, in the order they entered service.',
     /** Labels of a single history block. Values come from the data. */
-    history: {
+    block: {
       kicker: 'History',
       crew: 'Crew',
       armor: 'Armor',
@@ -239,11 +236,10 @@ const en = {
       weight: 'Weight',
       readHistory: 'Read History',
     },
-    /** Heading for the exhibit gallery kept below the ribbon. */
-    collection: {
-      title: 'The collection',
-      lead: 'Every finished model our modellers have put on display.',
-    },
+  },
+  museum: {
+    title: 'Museum',
+    lead: 'Finished models built by our modellers.',
     all: 'All',
     empty: 'No works in this category yet',
     emptyHint: 'Try another category — new works appear regularly.',

@@ -48,7 +48,7 @@ export function HistorySection() {
             </p>
 
             <Link
-              href="/museum"
+              href="/history"
               className="group mt-8 inline-flex w-fit items-center gap-3 border-b border-accent/50 pb-2 font-heading text-sm font-semibold uppercase tracking-wide text-accent-text transition-colors hover:border-accent"
             >
               {t.cta}

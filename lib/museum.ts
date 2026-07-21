@@ -15,7 +15,7 @@ import type { MuseumTimelineEntry, Product } from '@/types';
  * last on the product, without disturbing the catalog. A product with a single
  * photograph naturally shows the same one in both places.
  *
- * Shared by /museum, which shows the whole ribbon, and the home page, which
+ * Shared by /history, which shows the whole ribbon, and the home page, which
  * teases the opening entries — both must order and join identically.
  */
 export function buildTimeline(products: Product[]): MuseumTimelineEntry[] {

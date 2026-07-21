@@ -21,26 +21,30 @@ export function Footer() {
   const { locale } = useLocale();
   const t = getDictionary(locale).footer;
 
-  // Links carry a stable href here; labels come from the dictionary so they
-  // switch with the active locale. Hrefs are placeholders until routes exist.
+  // Labels come from the dictionary so they switch with the active locale.
+  // href: null marks an entry whose page does not exist yet — it renders as
+  // plain text instead of a link that goes nowhere.
+  // Catalog entries deep-link into the filters useFilters reads from the query
+  // string. Dioramas/accessories have no matching CategoryType, so they stay
+  // unlinked until the catalog taxonomy grows one.
   const catalogLinks = [
-    { label: t.catalog.tanks, href: '#' },
-    { label: t.catalog.armor, href: '#' },
-    { label: t.catalog.dioramas, href: '#' },
-    { label: t.catalog.accessories, href: '#' },
-    { label: t.catalog.comingSoon, href: '#' },
+    { label: t.catalog.tanks, href: '/catalog?category=tank' },
+    { label: t.catalog.armor, href: '/catalog?category=armored_car' },
+    { label: t.catalog.dioramas, href: null },
+    { label: t.catalog.accessories, href: null },
+    { label: t.catalog.comingSoon, href: '/catalog?status=coming_soon' },
   ];
   const infoLinks = [
-    { label: t.info.about, href: '#' },
-    { label: t.info.delivery, href: '#' },
-    { label: t.info.returns, href: '#' },
-    { label: t.info.news, href: '#' },
-    { label: t.info.contacts, href: '#' },
+    { label: t.info.about, href: '/about' },
+    { label: t.info.delivery, href: null },
+    { label: t.info.returns, href: null },
+    { label: t.info.news, href: null },
+    { label: t.info.contacts, href: '/contact' },
   ];
   const supportLinks = [
-    { label: t.support.faq, href: '#' },
-    { label: t.support.help, href: '#' },
-    { label: t.support.feedback, href: '#' },
+    { label: t.support.faq, href: null },
+    { label: t.support.help, href: null },
+    { label: t.support.feedback, href: '/contact' },
   ];
 
   return (
@@ -137,7 +141,7 @@ function FooterColumn({
   links,
 }: {
   title: string;
-  links: { label: string; href: string }[];
+  links: { label: string; href: string | null }[];
 }) {
   return (
     <div>
@@ -147,9 +151,13 @@ function FooterColumn({
       <ul className="mt-4 space-y-2.5 text-sm">
         {links.map((link) => (
           <li key={link.label}>
-            <Link href={link.href} className="transition-colors hover:text-accent-text">
-              {link.label}
-            </Link>
+            {link.href ? (
+              <Link href={link.href} className="transition-colors hover:text-accent-text">
+                {link.label}
+              </Link>
+            ) : (
+              <span className="cursor-default opacity-60">{link.label}</span>
+            )}
           </li>
         ))}
       </ul>

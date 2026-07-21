@@ -102,7 +102,7 @@ export function MuseumTimeline({ entries }: { entries: MuseumTimelineEntry[] }) 
 
 function HistoryBlock({ entry, flipped }: { entry: MuseumTimelineEntry; flipped: boolean }) {
   const { locale } = useLocale();
-  const t = getDictionary(locale).museum;
+  const t = getDictionary(locale).historyPage;
   const { ref, revealed } = useReveal<HTMLDivElement>();
 
   const name = entry.name[locale] || entry.name.en;
@@ -112,10 +112,10 @@ function HistoryBlock({ entry, flipped }: { entry: MuseumTimelineEntry; flipped:
   const photoOrder = flipped ? 'md:order-1' : 'md:order-2';
 
   const specs: { label: string; value: string }[] = [
-    { label: t.history.crew, value: entry.crew },
-    { label: t.history.armor, value: entry.armor },
-    { label: t.history.engine, value: entry.engine },
-    { label: t.history.weight, value: entry.weight },
+    { label: t.block.crew, value: entry.crew },
+    { label: t.block.armor, value: entry.armor },
+    { label: t.block.engine, value: entry.engine },
+    { label: t.block.weight, value: entry.weight },
   ];
 
   return (
@@ -139,7 +139,7 @@ function HistoryBlock({ entry, flipped }: { entry: MuseumTimelineEntry; flipped:
         >
           {/* Text column */}
           <div className={`min-w-0 ${textOrder}`}>
-            <p className={KICKER_CLASS}>{t.history.kicker}</p>
+            <p className={KICKER_CLASS}>{t.block.kicker}</p>
 
             {/* Digits only — safe for the Latin-only display face. */}
             <p className="mt-3 font-display text-[96px] font-bold leading-none text-accent-text md:text-[120px]">
@@ -171,7 +171,7 @@ function HistoryBlock({ entry, flipped }: { entry: MuseumTimelineEntry; flipped:
               data-testid="history-link"
               className="mt-8 inline-flex h-[52px] items-center justify-center rounded-[4px] border border-border px-6 font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:border-accent hover:text-accent-text"
             >
-              {t.history.readHistory}
+              {t.block.readHistory}
             </Link>
           </div>
 

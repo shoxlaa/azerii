@@ -33,7 +33,10 @@ export function LocaleProvider({
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
     // Persist the choice so it survives reloads and future visits.
-    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_MAX_AGE}; samesite=lax`;
+    // `secure` only on https — on a plain-http localhost the browser would
+    // silently drop the cookie.
+    const secure = window.location.protocol === 'https:' ? '; secure' : '';
+    document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_MAX_AGE}; samesite=lax${secure}`;
   }, []);
 
   const toggleLocale = useCallback(() => {

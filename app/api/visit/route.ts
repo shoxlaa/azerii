@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import { getPayload } from 'payload';
 import config from '@payload-config';
@@ -13,6 +13,16 @@ import config from '@payload-config';
  */
 
 export const dynamic = 'force-dynamic';
+
+/** True when the request reached us over HTTPS (Vercel terminates TLS upstream). */
+function isHttps(request: NextRequest): boolean {
+  // `request.nextUrl` normalises to the deployment base and reports https even
+  // on a local http server, so read the raw request URL instead.
+  return (
+    request.headers.get('x-forwarded-proto') === 'https' ||
+    new URL(request.url).protocol === 'https:'
+  );
+}
 
 const TIME_ZONE = 'Asia/Baku';
 const VISIT_COOKIE = 'azerii_visit';
@@ -49,7 +59,7 @@ function endOfDayInBaku(): Date {
   return new Date(now.getTime() + (dayMs - elapsedMs));
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const today = todayInBaku();
     const jar = await cookies();
@@ -86,6 +96,9 @@ export async function POST() {
     response.cookies.set(VISIT_COOKIE, today, {
       httpOnly: true,
       sameSite: 'lax',
+      // Only over HTTPS in production; local development runs on plain http,
+      // where a Secure cookie would simply never be stored.
+      secure: isHttps(request),
       path: '/',
       expires: endOfDayInBaku(),
     });

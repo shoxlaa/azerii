@@ -23,6 +23,11 @@ export function proxy(request: NextRequest) {
       path: '/',
       maxAge: LOCALE_MAX_AGE,
       sameSite: 'lax',
+      // Derived from the request scheme, not NODE_ENV: `next start` reports
+      // production even on a local http server.
+      secure:
+        request.headers.get('x-forwarded-proto') === 'https' ||
+        request.nextUrl.protocol === 'https:',
     });
   }
 

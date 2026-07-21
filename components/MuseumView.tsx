@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * MuseumView — gallery of finished models built by our young modellers.
+ * MuseumView — gallery of finished models built by our modellers.
  *
  * Exhibits are not products: no price, no cart. The only commercial touch is
  * an optional link to the catalog when we happen to sell the same kit.

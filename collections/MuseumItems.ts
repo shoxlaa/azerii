@@ -21,7 +21,7 @@ export const MuseumItems: CollectionConfig = {
     group: 'Музей',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'scale', 'product'],
-    description: 'Готовые собранные модели — работы детей. Не товары.',
+    description: 'Готовые собранные модели из экспозиции. Не товары.',
   },
   access: {
     read: () => true, // the museum page is public

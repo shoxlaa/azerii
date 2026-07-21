@@ -4,7 +4,7 @@ import { getMuseumItemsSafe } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'Музей — AZERII',
-  description: 'Галерея готовых моделей, собранных нашими юными моделистами.',
+  description: 'Галерея готовых моделей, собранных нашими моделистами.',
 };
 
 export default async function MuseumPage() {

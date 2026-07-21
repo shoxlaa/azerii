@@ -217,7 +217,7 @@ const en = {
   },
   museum: {
     title: 'Museum',
-    lead: 'Finished models built by our young modellers.',
+    lead: 'Finished models built by our modellers.',
     all: 'All',
     empty: 'No works in this category yet',
     emptyHint: 'Try another category — new works appear regularly.',

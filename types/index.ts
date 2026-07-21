@@ -94,6 +94,29 @@ export interface MuseumItem {
   updatedAt: string;
 }
 
+/**
+ * One block of the museum timeline: a product joined to its curated history
+ * note (see `constants/museumHistory.ts`).
+ *
+ * Built on the server and handed to the client component already flattened,
+ * so the timeline never has to know about products or history separately.
+ * Deliberately carries no price — the museum does not sell.
+ */
+export interface MuseumTimelineEntry {
+  /** Catalog code of the product, used for the link to its page. */
+  slug: string;
+  /** Localized product name, shown in Latin as stored. */
+  name: Localized;
+  /** Primary photograph, when the product has one. */
+  image?: string;
+  year: number;
+  country: string;
+  crew: string;
+  armor: string;
+  engine: string;
+  weight: string;
+}
+
 /** How the order is delivered. */
 export type ShippingMethod = 'standard' | 'express' | 'pickup';
 

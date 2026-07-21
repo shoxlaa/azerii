@@ -85,6 +85,12 @@ const en = {
     title: 'AZERII SCALE MODEL',
     text: 'We build scale models of armored vehicles to preserve history and inspire the next generation of modelers. Every model blends historical accuracy, high quality and love for detail.',
   },
+  history: {
+    eyebrow: 'History',
+    title: 'Behind every model there is a story',
+    text: 'We don’t just build models. We preserve the legacy of engineering, battles, and people who shaped the history.',
+    cta: 'Explore history',
+  },
   productPage: {
     buy: 'Buy',
     unavailable: 'Currently unavailable',
@@ -218,6 +224,26 @@ const en = {
   museum: {
     title: 'Museum',
     lead: 'Finished models built by our modellers.',
+    /** Title wall above the history ribbon. */
+    intro: {
+      kicker: 'AZERII MUSEUM',
+      title: 'History of Armor',
+      lead: 'The machines we rebuild at 1:16, in the order they entered service.',
+    },
+    /** Labels of a single history block. Values come from the data. */
+    history: {
+      kicker: 'History',
+      crew: 'Crew',
+      armor: 'Armor',
+      engine: 'Engine',
+      weight: 'Weight',
+      readHistory: 'Read History',
+    },
+    /** Heading for the exhibit gallery kept below the ribbon. */
+    collection: {
+      title: 'The collection',
+      lead: 'Every finished model our modellers have put on display.',
+    },
     all: 'All',
     empty: 'No works in this category yet',
     emptyHint: 'Try another category — new works appear regularly.',

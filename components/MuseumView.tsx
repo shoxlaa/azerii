@@ -1,29 +1,74 @@
 'use client';
 
 /**
- * MuseumView — gallery of finished models built by our modellers.
+ * MuseumView — a digital museum, not a shop section.
  *
- * Exhibits are not products: no price, no cart. The only commercial touch is
- * an optional link to the catalog when we happen to sell the same kit.
+ * Reads as a visit: a title wall, then a history ribbon of the machines we
+ * rebuild, oldest first. The standing collection of finished exhibits follows
+ * below.
+ *
+ * Nothing here carries a price or a buy button. Exhibits are not products,
+ * and the timeline links to a model's page to read about it, not to buy it.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createPortal } from 'react-dom';
-import type { MuseumCategory, MuseumItem } from '@/types';
+import type { MuseumCategory, MuseumItem, MuseumTimelineEntry } from '@/types';
 import { MUSEUM_CATEGORIES } from '@/constants';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { Container } from './ui/Container';
 import { CloseIcon } from './icons';
+import { MuseumTimeline, KICKER_CLASS } from './MuseumTimeline';
 
 /** Horizontal travel (px) that counts as a swipe in the exhibit modal. */
 const SWIPE_THRESHOLD = 50;
 
 type Filter = MuseumCategory | 'all';
 
-export function MuseumView({ items }: { items: MuseumItem[] }) {
+export interface MuseumViewProps {
+  items: MuseumItem[];
+  /** Products joined to their curated history note, oldest first. */
+  timeline: MuseumTimelineEntry[];
+}
+
+export function MuseumView({ items, timeline }: MuseumViewProps) {
+  return (
+    <>
+      <TitleWall />
+      <MuseumTimeline entries={timeline} />
+      <Collection items={items} />
+    </>
+  );
+}
+
+/**
+ * Title wall — the plate by the door.
+ *
+ * Sized after `.text-h1` but set in `font-heading`: the display face is Latin
+ * only, and this heading has to render in Russian too.
+ */
+function TitleWall() {
+  const { locale } = useLocale();
+  const t = getDictionary(locale).museum.intro;
+
+  return (
+    <section className="py-12 text-center md:py-16">
+      <Container>
+        <p className={KICKER_CLASS}>{t.kicker}</p>
+        <h1 className="mt-5 font-heading text-[40px] font-bold uppercase leading-[0.95] tracking-[1px] text-heading md:text-[56px] lg:text-[72px] lg:tracking-[2px]">
+          {t.title}
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl text-subtle">{t.lead}</p>
+      </Container>
+    </section>
+  );
+}
+
+/** The standing collection: every finished exhibit, filterable by category. */
+function Collection({ items }: { items: MuseumItem[] }) {
   const { locale } = useLocale();
   const dict = getDictionary(locale);
   const t = dict.museum;
@@ -47,10 +92,10 @@ export function MuseumView({ items }: { items: MuseumItem[] }) {
   return (
     <section className="py-12 md:py-16">
       <Container>
-        <h1 className="font-heading text-[40px] font-bold uppercase tracking-[1px] text-heading md:text-[56px]">
-          {t.title}
-        </h1>
-        <p className="mt-2 max-w-2xl text-subtle">{t.lead}</p>
+        <h2 className="font-heading text-[28px] font-bold uppercase tracking-wide text-heading md:text-[40px]">
+          {t.collection.title}
+        </h2>
+        <p className="mt-2 max-w-2xl text-subtle">{t.collection.lead}</p>
 
         {/* Category switcher — filters client-side, no navigation */}
         {items.length > 0 ? (
@@ -162,7 +207,7 @@ function ExhibitCard({
       type="button"
       onClick={onOpen}
       data-testid="museum-card"
-      className="group flex flex-col overflow-hidden rounded-md border border-border bg-panel text-left transition-colors hover:border-accent/60"
+      className="group flex min-w-0 flex-col overflow-hidden rounded-md border border-border bg-panel text-left transition-colors hover:border-accent/60"
     >
       {/* Fixed 4:3 slot keeps the grid even; object-contain never crops the model. */}
       <span className="relative block aspect-[4/3] w-full overflow-hidden bg-bg">

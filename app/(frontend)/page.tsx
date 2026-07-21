@@ -1,5 +1,6 @@
 import { Hero } from '@/components/Hero';
 import { CatalogSection } from '@/components/CatalogSection';
+import { HistorySection } from '@/components/HistorySection';
 import { FeaturesRow } from '@/components/FeaturesRow';
 import { WorkshopSection } from '@/components/WorkshopSection';
 import { PromoSection } from '@/components/PromoSection';
@@ -15,6 +16,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <HistorySection />
       <CatalogSection products={items} />
       <FeaturesRow />
       <WorkshopSection videos={videos} />

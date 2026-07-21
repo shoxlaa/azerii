@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import type { Product } from '@/types';
+import type { Product, ProductStatus } from '@/types';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { Container } from './ui/Container';
@@ -12,13 +12,22 @@ interface CatalogSectionProps {
   products: Product[];
 }
 
+/** How many models the homepage teases before sending visitors to /catalog. */
+const PREVIEW_COUNT = 3;
+
+/** Statuses a visitor can actually buy today. */
+const BUYABLE_STATUSES: ProductStatus[] = ['in_stock', 'limited'];
+
 /** Homepage "Model catalog" preview — a grid of product cards. */
 export function CatalogSection({ products }: CatalogSectionProps) {
   const { locale } = useLocale();
   const dict = getDictionary(locale);
   const t = dict.catalogSection;
 
-  const items = products.slice(0, 8);
+  // Only what can actually be bought right now; everything else lives in /catalog.
+  const items = products
+    .filter((product) => BUYABLE_STATUSES.includes(product.status))
+    .slice(0, PREVIEW_COUNT);
 
   return (
     <section className="py-16 md:py-20">
@@ -39,7 +48,7 @@ export function CatalogSection({ products }: CatalogSectionProps) {
         {items.length === 0 ? (
           <p className="mt-10 text-subtle">{t.empty}</p>
         ) : (
-          <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-3">
             {items.map((product) => (
               <ProductCard
                 key={product.id}

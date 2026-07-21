@@ -46,6 +46,21 @@ function poolerMode(): { mode: 'transaction' | 'session' | 'unknown'; max: numbe
   return { mode, max: Number(process.env.DATABASE_POOL_MAX ?? (mode === 'transaction' ? 10 : 3)) };
 }
 
+/**
+ * Whether order notifications can actually be sent.
+ *
+ * Without a key orders are still recorded but no e-mail leaves the server, and
+ * that failure is otherwise only visible in the function logs. Reports
+ * presence and the sender only — never the key itself.
+ */
+function mailStatus(): { configured: boolean; from: string; notify: boolean } {
+  return {
+    configured: Boolean(process.env.RESEND_API_KEY),
+    from: process.env.MAIL_FROM || 'AZERII <onboarding@resend.dev>',
+    notify: Boolean(process.env.ORDER_NOTIFY_EMAIL),
+  };
+}
+
 export async function GET() {
   const startedAt = Date.now();
 
@@ -55,7 +70,12 @@ export async function GET() {
     await payload.count({ collection: 'products' });
 
     return NextResponse.json(
-      { status: 'ok', db: { ok: true, ms: Date.now() - startedAt }, pool: poolerMode() },
+      {
+        status: 'ok',
+        db: { ok: true, ms: Date.now() - startedAt },
+        pool: poolerMode(),
+        mail: mailStatus(),
+      },
       { status: 200, headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (err) {
@@ -66,6 +86,7 @@ export async function GET() {
         status: 'degraded',
         db: { ok: false, ms: Date.now() - startedAt, error: safeReason(err) },
         pool: poolerMode(),
+        mail: mailStatus(),
       },
       { status: 503, headers: { 'Cache-Control': 'no-store' } },
     );

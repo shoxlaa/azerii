@@ -127,7 +127,10 @@ export const Products: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       hasMany: true,
-      admin: { description: 'Изображения (загрузка в Supabase Storage).' },
+      admin: {
+        description:
+          'Изображения (загрузка в Supabase Storage). Порядок важен: первое фото — главное в каталоге, последнее — в музейном таймлайне.',
+      },
     },
     {
       name: 'description',

@@ -9,6 +9,7 @@ import sharp from 'sharp';
 import { Products } from './collections/Products';
 import { Media } from './collections/Media';
 import { MuseumItems } from './collections/MuseumItems';
+import { Paintings } from './collections/Paintings';
 import { Orders } from './collections/Orders';
 import { DailyVisits } from './collections/DailyVisits';
 import { Users } from './collections/Users';
@@ -74,7 +75,7 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
   },
-  collections: [Products, MuseumItems, Orders, DailyVisits, Media, Users],
+  collections: [Products, MuseumItems, Paintings, Orders, DailyVisits, Media, Users],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

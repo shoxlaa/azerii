@@ -1,9 +1,11 @@
 import 'server-only';
 
 /**
- * Data client — reads catalog and museum data from Payload via the Local API.
+ * Data client — reads catalog, museum and gallery data from Payload via the
+ * Local API.
  *
- * Payload documents are mapped to our domain types (`Product`, `MuseumItem`).
+ * Payload documents are mapped to our domain types (`Product`, `MuseumItem`,
+ * `Painting`).
  * If Payload/DB is not configured yet, the functions degrade gracefully
  * (empty result) so the storefront never crashes before setup.
  */
@@ -17,9 +19,12 @@ import type {
   ModelScale,
   MuseumCategory,
   MuseumItem,
+  Painting,
+  PaintingMaterial,
   Product,
   ProductStatus,
   TechType,
+  WorkType,
 } from '@/types';
 
 /**
@@ -217,6 +222,60 @@ export async function getMuseumItems(): Promise<MuseumItem[]> {
   });
 }
 
+/** Minimal shape of a Payload painting document we rely on. */
+interface PayloadPainting {
+  id: string | number;
+  title: Record<Locale, string> | string;
+  description?: Record<Locale, unknown> | unknown;
+  size: string;
+  workType: WorkType;
+  material: PaintingMaterial;
+  price: number;
+  mainImage?: { url?: string | null } | string | number | null;
+  gallery?: Array<{ url?: string | null } | string | number> | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Map a Payload painting document to our domain `Painting`. */
+function mapPainting(doc: PayloadPainting): Painting {
+  // Main photo first, then any extra shots — same order as museum exhibits.
+  const images = [
+    uploadUrl(doc.mainImage),
+    ...(doc.gallery ?? []).map(uploadUrl),
+  ].filter((url): url is string => Boolean(url));
+
+  return {
+    id: String(doc.id),
+    title: toLocalized(doc.title),
+    description: toLocalized(doc.description, lexicalToPlain),
+    size: doc.size,
+    workType: doc.workType,
+    material: doc.material,
+    // numeric(10,2) can arrive as a string from postgres.
+    priceEur: Number(doc.price),
+    images,
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
+  };
+}
+
+/** Return all gallery paintings, newest first. Throws if the DB is unreachable. */
+export async function getPaintings(): Promise<Painting[]> {
+  return withRetry('getPaintings', async () => {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: 'paintings',
+      locale: 'all',
+      // depth 1 populates the mainImage/gallery uploads.
+      depth: 1,
+      limit: 500,
+      sort: '-createdAt',
+    });
+    return (docs as unknown as PayloadPainting[]).map(mapPainting);
+  });
+}
+
 /**
  * Catalog for pages that must still render during a brief database outage
  * (listings, cart and checkout summaries).
@@ -240,6 +299,16 @@ export async function getMuseumItemsSafe(): Promise<MuseumItem[]> {
     return await getMuseumItems();
   } catch (err) {
     console.error('[data] museum unavailable, rendering without it:', err);
+    return [];
+  }
+}
+
+/** Gallery paintings for a page that should degrade to an empty gallery. */
+export async function getPaintingsSafe(): Promise<Painting[]> {
+  try {
+    return await getPaintings();
+  } catch (err) {
+    console.error('[data] gallery unavailable, rendering without it:', err);
     return [];
   }
 }

@@ -9,8 +9,10 @@ import type {
   CategoryType,
   ModelScale,
   MuseumCategory,
+  PaintingMaterial,
   ProductStatus,
   TechType,
+  WorkType,
 } from '@/types';
 
 /** Brand color palette. */
@@ -68,6 +70,24 @@ export const MUSEUM_CATEGORIES: MuseumCategory[] = [
   'miniatures',
   'railway',
   'ships',
+];
+
+/** Painting techniques in display order. */
+export const WORK_TYPES: WorkType[] = [
+  'oil',
+  'acrylic',
+  'watercolor',
+  'graphics',
+  'mixed',
+  'print',
+];
+
+/** Painting surfaces in display order. */
+export const PAINTING_MATERIALS: PaintingMaterial[] = [
+  'canvas',
+  'canvas_on_board',
+  'paper',
+  'wood',
 ];
 
 /** Selectable model scales, largest first. */

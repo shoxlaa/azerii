@@ -5,6 +5,7 @@ const en = {
     catalog: 'Catalog',
     history: 'History',
     museum: 'Museum',
+    gallery: 'Gallery',
     about: 'About',
     contact: 'Contact',
   },
@@ -237,6 +238,34 @@ const en = {
       readHistory: 'Read History',
     },
   },
+  workType: {
+    oil: 'Oil',
+    acrylic: 'Acrylic',
+    watercolor: 'Watercolor',
+    graphics: 'Graphics',
+    mixed: 'Mixed media',
+    print: 'Print',
+  },
+  paintingMaterial: {
+    canvas: 'Canvas',
+    canvas_on_board: 'Canvas on board',
+    paper: 'Paper',
+    wood: 'Wood',
+  },
+  // Note: `gallery` below is the image-lightbox namespace — unrelated.
+  paintings: {
+    title: 'Gallery',
+    lead: 'Paintings on canvas. Every piece is one of a kind.',
+    empty: 'The gallery is filling up',
+    emptyHint: 'The first works will appear here very soon.',
+    noImage: 'Photo coming soon',
+    enquire: 'Enquire about buying',
+    fields: {
+      size: 'Size',
+      workType: 'Technique',
+      material: 'Material',
+    },
+  },
   museum: {
     title: 'Museum',
     lead: 'Finished models built by our modellers.',
@@ -298,6 +327,7 @@ const en = {
       armor: 'Armored vehicles',
       dioramas: 'Dioramas',
       accessories: 'Accessories',
+      gallery: 'Gallery',
       comingSoon: 'Coming soon',
     },
     info: {

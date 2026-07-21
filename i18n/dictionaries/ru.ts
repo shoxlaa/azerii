@@ -5,6 +5,7 @@ const ru = {
     catalog: 'Каталог',
     history: 'История',
     museum: 'Музей',
+    gallery: 'Галерея',
     about: 'О нас',
     contact: 'Контакты',
   },
@@ -237,6 +238,34 @@ const ru = {
       readHistory: 'Читать историю',
     },
   },
+  workType: {
+    oil: 'Масло',
+    acrylic: 'Акрил',
+    watercolor: 'Акварель',
+    graphics: 'Графика',
+    mixed: 'Смешанная техника',
+    print: 'Печать',
+  },
+  paintingMaterial: {
+    canvas: 'Холст',
+    canvas_on_board: 'Холст на картоне',
+    paper: 'Бумага',
+    wood: 'Дерево',
+  },
+  // Note: `gallery` below is the image-lightbox namespace — unrelated.
+  paintings: {
+    title: 'Галерея',
+    lead: 'Картины на холсте. Каждая работа существует в единственном экземпляре.',
+    empty: 'Галерея наполняется',
+    emptyHint: 'Первые работы появятся здесь совсем скоро.',
+    noImage: 'Фото скоро появится',
+    enquire: 'Узнать о покупке',
+    fields: {
+      size: 'Размер',
+      workType: 'Тип работы',
+      material: 'Материал',
+    },
+  },
   museum: {
     title: 'Музей',
     lead: 'Готовые модели, собранные нашими моделистами.',
@@ -298,6 +327,7 @@ const ru = {
       armor: 'Бронетехника',
       dioramas: 'Диорамы',
       accessories: 'Аксессуары',
+      gallery: 'Галерея',
       comingSoon: 'Скоро в продаже',
     },
     info: {

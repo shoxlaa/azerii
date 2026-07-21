@@ -32,6 +32,7 @@ export function Footer() {
     { label: t.catalog.armor, href: '/catalog?category=armored_car' },
     { label: t.catalog.dioramas, href: null },
     { label: t.catalog.accessories, href: null },
+    { label: t.catalog.gallery, href: '/gallery' },
     { label: t.catalog.comingSoon, href: '/catalog?status=coming_soon' },
   ];
   const infoLinks = [

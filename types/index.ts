@@ -45,6 +45,24 @@ export type TechType = 'lazer' | '3d' | 'rezin' | 'litnik';
 export type CategoryType = 'tank' | 'chassis' | 'tracks' | 'armored_car';
 
 /**
+ * Technique a painting was made with ("тип работы").
+ * - oil        — oil paints
+ * - acrylic    — acrylic paints
+ * - watercolor — watercolor
+ * - graphics   — pencil / ink / charcoal
+ * - mixed      — mixed media
+ * - print      — reproduction print
+ */
+export type WorkType = 'oil' | 'acrylic' | 'watercolor' | 'graphics' | 'mixed' | 'print';
+
+/**
+ * Physical surface a painting is made on ("материал").
+ * Canvas is the common case; the rest exist because a gallery inevitably
+ * accumulates work on other surfaces.
+ */
+export type PaintingMaterial = 'canvas' | 'canvas_on_board' | 'paper' | 'wood';
+
+/**
  * Category of a museum exhibit.
  * The museum shows finished models built by children — these are exhibits,
  * not merchandise, so they have their own categories independent of
@@ -154,6 +172,32 @@ export interface Product {
   images: string[];
   /** Whether the product is featured on the homepage. */
   featured?: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * A painting shown in the AZERII gallery.
+ *
+ * Deliberately separate from `Product`: a canvas has no scale, no
+ * manufacturing technology and no stock — each one is a single physical piece.
+ * Currently a showcase only; buyers enquire via the contact page rather than
+ * ordering through the cart.
+ */
+export interface Painting {
+  id: string;
+  /** Localized title. */
+  title: Localized;
+  /** Localized description. */
+  description: Localized;
+  /** Free-form physical size as entered by the admin, e.g. "60×80 см". */
+  size: string;
+  workType: WorkType;
+  material: PaintingMaterial;
+  /** Price in EUR (e.g. 450.00). */
+  priceEur: number;
+  /** Image URLs; first entry is the primary image. */
+  images: string[];
   createdAt: string;
   updatedAt: string;
 }

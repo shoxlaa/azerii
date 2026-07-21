@@ -27,6 +27,7 @@ export function Header() {
     { href: '/catalog', label: dict.nav.catalog },
     { href: '/history', label: dict.nav.history },
     { href: '/museum', label: dict.nav.museum },
+    { href: '/gallery', label: dict.nav.gallery },
     { href: '/about', label: dict.nav.about },
     { href: '/contact', label: dict.nav.contact },
   ];

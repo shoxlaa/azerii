@@ -171,6 +171,35 @@ async function recordOrder(order: Order): Promise<void> {
 }
 
 /**
+ * Attach the notification outcome to the stored order.
+ *
+ * Deliberately swallows its own failure: the order and the e-mails already
+ * happened, and losing the audit note must not turn a completed checkout into
+ * an error.
+ */
+async function markNotifyStatus(orderNumber: string, status: string): Promise<void> {
+  try {
+    const payload = await getPayload({ config });
+    const { docs } = await payload.find({
+      collection: 'orders',
+      where: { orderNumber: { equals: orderNumber } },
+      limit: 1,
+      depth: 0,
+    });
+    const doc = docs[0] as { id: string | number } | undefined;
+    if (doc) {
+      await payload.update({
+        collection: 'orders',
+        id: doc.id as string,
+        data: { notifyStatus: status },
+      });
+    }
+  } catch (err) {
+    console.error('[orders] could not record notification status:', err);
+  }
+}
+
+/**
  * Create an order: record it, then notify seller and buyer.
  * Callers must pass authoritative prices (see `submitOrder`).
  */
@@ -197,16 +226,24 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
   // must not tell the customer it failed and make them order twice.
   const seller = sellerEmail(order);
   const buyer = buyerEmail(order);
-  const [sellerSent, buyerSent] = await Promise.all([
+  const [sellerResult, buyerResult] = await Promise.all([
     sendMail({ to: SELLER_EMAIL, subject: seller.subject, body: seller.body }),
     sendMail({ to: order.customer.email, subject: buyer.subject, body: buyer.body }),
   ]);
 
-  if (!sellerSent || !buyerSent) {
-    console.error(
-      `[orders] ${order.id} stored but notification incomplete — seller: ${sellerSent}, buyer: ${buyerSent}`,
-    );
+  // Record the outcome on the order itself. Provider failures are otherwise
+  // only visible in the function logs, which is no help when a notification
+  // silently never arrives.
+  const status = [
+    `seller: ${sellerResult.ok ? 'ok' : `failed — ${sellerResult.error}`}`,
+    `buyer: ${buyerResult.ok ? 'ok' : `failed — ${buyerResult.error}`}`,
+  ].join(' | ');
+
+  if (!sellerResult.ok || !buyerResult.ok) {
+    console.error(`[orders] ${order.id} stored but notification incomplete — ${status}`);
   }
+
+  await markNotifyStatus(order.id, status);
 
   return order;
 }

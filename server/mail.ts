@@ -35,15 +35,30 @@ function getClient(): Resend | null {
   return client;
 }
 
-/** Send an email. Returns whether it was actually dispatched. */
-export async function sendMail(message: MailMessage): Promise<boolean> {
+/** Outcome of one send, so callers can record *why* a notification failed. */
+export interface MailResult {
+  ok: boolean;
+  /** Short reason when `ok` is false — safe to store and show in the admin. */
+  error?: string;
+}
+
+/** Trim a provider error to something storable. */
+function reason(value: unknown): string {
+  if (!value) return 'unknown error';
+  if (typeof value === 'string') return value.slice(0, 200);
+  const e = value as { name?: string; message?: string };
+  return `${e.name ?? 'error'}: ${e.message ?? JSON.stringify(value)}`.slice(0, 200);
+}
+
+/** Send an email. Never throws; reports whether it was dispatched and why not. */
+export async function sendMail(message: MailMessage): Promise<MailResult> {
   const resend = getClient();
 
   if (!resend) {
     console.warn(
       `[mail] RESEND_API_KEY not set — not sending "${message.subject}" to ${message.to}`,
     );
-    return false;
+    return { ok: false, error: 'RESEND_API_KEY not set' };
   }
 
   try {
@@ -56,13 +71,13 @@ export async function sendMail(message: MailMessage): Promise<boolean> {
 
     if (error) {
       console.error('[mail] send failed:', message.subject, '→', message.to, error);
-      return false;
+      return { ok: false, error: reason(error) };
     }
 
     console.info('[mail] sent', data?.id, message.subject, '→', message.to);
-    return true;
+    return { ok: true };
   } catch (err) {
     console.error('[mail] send threw:', message.subject, '→', message.to, err);
-    return false;
+    return { ok: false, error: reason(err) };
   }
 }

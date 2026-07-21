@@ -118,5 +118,14 @@ export const Orders: CollectionConfig = {
       type: 'textarea',
       admin: { readOnly: true, description: 'Комментарий покупателя.' },
     },
+    {
+      name: 'notifyStatus',
+      type: 'text',
+      admin: {
+        readOnly: true,
+        description:
+          'Ушли ли письма продавцу и покупателю. Если нет — здесь причина отказа почтового провайдера.',
+      },
+    },
   ],
 };

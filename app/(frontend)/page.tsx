@@ -9,7 +9,7 @@ import { getProductsSafe } from '@/lib/data';
 import { buildTimeline } from '@/lib/museum';
 import { getWorkshopVideos } from '@/lib/youtube';
 
-/** How many history blocks the home page teases before /museum takes over. */
+/** How many history blocks the home page teases before /history takes over. */
 const TIMELINE_PREVIEW_COUNT = 3;
 
 export default async function Home() {
@@ -19,7 +19,7 @@ export default async function Home() {
   const videos = await getWorkshopVideos();
 
   // The opening entries of the museum ribbon, built from the products already
-  // fetched above — the full timeline lives on /museum.
+  // fetched above — the full timeline lives on /history.
   const timeline = buildTimeline(items).slice(0, TIMELINE_PREVIEW_COUNT);
 
   return (

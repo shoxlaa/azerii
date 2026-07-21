@@ -1,6 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { CATEGORY_TYPES, PRODUCT_STATUSES, TECH_TYPES } from '@/constants';
 import type {
   CategoryType,
   Product,
@@ -9,6 +11,11 @@ import type {
 } from '@/types';
 
 export type SortKey = 'newest' | 'price-asc' | 'price-desc' | 'availability';
+
+const SORT_KEYS: SortKey[] = ['newest', 'price-asc', 'price-desc', 'availability'];
+
+/** Query-string keys for each facet. */
+const PARAM = { types: 'category', techs: 'tech', statuses: 'status' } as const;
 
 /** Order used for the "by availability" sort (in-stock first). */
 const AVAILABILITY_ORDER: Record<ProductStatus, number> = {
@@ -26,14 +33,68 @@ function toggle<T>(list: T[], value: T): T[] {
 }
 
 /**
- * useFilters — client-side filtering & sorting for the catalog.
+ * Read one facet from the query string. Values are accepted either repeated
+ * (`?category=tank&category=tracks`) or comma-joined (`?category=tank,tracks`);
+ * anything not in `allowed` is dropped, so a hand-edited URL can't poison state.
+ * Returns them in `allowed` order so the URL stays stable regardless of the
+ * order the user clicked the boxes in.
+ */
+function readFacet<T extends string>(
+  search: string,
+  key: string,
+  allowed: readonly T[],
+): T[] {
+  const raw = new URLSearchParams(search).getAll(key).flatMap((v) => v.split(','));
+  return allowed.filter((option) => raw.includes(option));
+}
+
+/**
+ * useFilters — filtering & sorting for the catalog, with the query string as
+ * the single source of truth. That makes filtered views linkable (the footer
+ * category links rely on it) and makes back/forward restore the last selection.
  * Empty filter arrays mean "no restriction" for that facet.
  */
 export function useFilters(products: Product[]) {
-  const [types, setTypes] = useState<CategoryType[]>([]);
-  const [techs, setTechs] = useState<TechType[]>([]);
-  const [statuses, setStatuses] = useState<ProductStatus[]>([]);
-  const [sort, setSort] = useState<SortKey>('newest');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
+
+  // Keyed on the raw query string so the arrays keep a stable identity across
+  // re-renders and the filtering memo below actually holds.
+  const types = useMemo(() => readFacet(search, PARAM.types, CATEGORY_TYPES), [search]);
+  const techs = useMemo(() => readFacet(search, PARAM.techs, TECH_TYPES), [search]);
+  const statuses = useMemo(
+    () => readFacet(search, PARAM.statuses, PRODUCT_STATUSES),
+    [search],
+  );
+
+  const sortParam = searchParams.get('sort') as SortKey | null;
+  const sort: SortKey = sortParam && SORT_KEYS.includes(sortParam) ? sortParam : 'newest';
+
+  /** Rewrite the query string in place — no history entry, no scroll jump. */
+  const commit = useCallback(
+    (mutate: (params: URLSearchParams) => void) => {
+      const next = new URLSearchParams(search);
+      mutate(next);
+      const qs = next.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    },
+    [search, pathname, router],
+  );
+
+  const toggleFacet = useCallback(
+    <T extends string>(key: string, allowed: readonly T[], value: T) =>
+      commit((params) => {
+        const current = readFacet(params.toString(), key, allowed);
+        const selected = toggle(current, value);
+        params.delete(key);
+        // Re-derive from `allowed` so the param order never depends on clicks.
+        const ordered = allowed.filter((option) => selected.includes(option));
+        if (ordered.length > 0) params.set(key, ordered.join(','));
+      }),
+    [commit],
+  );
 
   const filtered = useMemo(() => {
     const result = products.filter(
@@ -65,16 +126,22 @@ export function useFilters(products: Product[]) {
     techs,
     statuses,
     sort,
-    setSort,
     filtered,
     activeCount,
-    toggleType: (v: CategoryType) => setTypes((l) => toggle(l, v)),
-    toggleTech: (v: TechType) => setTechs((l) => toggle(l, v)),
-    toggleStatus: (v: ProductStatus) => setStatuses((l) => toggle(l, v)),
-    reset: () => {
-      setTypes([]);
-      setTechs([]);
-      setStatuses([]);
-    },
+    setSort: (v: SortKey) =>
+      commit((params) => {
+        // 'newest' is the default — leave it out to keep shared URLs tidy.
+        if (v === 'newest') params.delete('sort');
+        else params.set('sort', v);
+      }),
+    toggleType: (v: CategoryType) => toggleFacet(PARAM.types, CATEGORY_TYPES, v),
+    toggleTech: (v: TechType) => toggleFacet(PARAM.techs, TECH_TYPES, v),
+    toggleStatus: (v: ProductStatus) => toggleFacet(PARAM.statuses, PRODUCT_STATUSES, v),
+    reset: () =>
+      commit((params) => {
+        params.delete(PARAM.types);
+        params.delete(PARAM.techs);
+        params.delete(PARAM.statuses);
+      }),
   };
 }

@@ -10,6 +10,7 @@ import { Products } from './collections/Products';
 import { Media } from './collections/Media';
 import { MuseumItems } from './collections/MuseumItems';
 import { Orders } from './collections/Orders';
+import { DailyVisits } from './collections/DailyVisits';
 import { Users } from './collections/Users';
 
 const filename = fileURLToPath(import.meta.url);
@@ -73,7 +74,7 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
   },
-  collections: [Products, MuseumItems, Orders, Media, Users],
+  collections: [Products, MuseumItems, Orders, DailyVisits, Media, Users],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

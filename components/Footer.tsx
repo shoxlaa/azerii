@@ -6,6 +6,7 @@ import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { SOCIAL_LINKS } from '@/constants';
 import { Container } from './ui/Container';
+import { VisitCounter } from './VisitCounter';
 import { FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon } from './icons';
 import type { SocialName } from '@/constants/socials';
 
@@ -123,6 +124,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-2 border-t border-border pt-6 text-xs sm:flex-row">
           <p>{t.copyright}</p>
+          <VisitCounter />
           <p>{t.madeWith}</p>
         </div>
       </Container>

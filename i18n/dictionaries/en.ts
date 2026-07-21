@@ -244,6 +244,9 @@ const en = {
     thumb: 'Image',
     counter: 'of',
   },
+  visitCounter: {
+    label: 'Visitors today',
+  },
   errorPage: {
     title: 'Something went wrong',
     text: 'The page could not be loaded — this is usually temporary. Please try again.',

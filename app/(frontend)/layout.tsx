@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { CartHydrator } from '@/components/CartHydrator';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { LocaleProvider } from '@/i18n/locale-context';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale } from '@/i18n/config';
@@ -64,6 +65,7 @@ export default async function RootLayout({
         </ThemeProvider>
         {/* Storefront only — deliberately not mounted in the Payload admin layout. */}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

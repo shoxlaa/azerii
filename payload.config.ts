@@ -9,6 +9,7 @@ import sharp from 'sharp';
 import { Products } from './collections/Products';
 import { Media } from './collections/Media';
 import { MuseumItems } from './collections/MuseumItems';
+import { Orders } from './collections/Orders';
 import { Users } from './collections/Users';
 
 const filename = fileURLToPath(import.meta.url);
@@ -72,7 +73,7 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
   },
-  collections: [Products, MuseumItems, Media, Users],
+  collections: [Products, MuseumItems, Orders, Media, Users],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -109,11 +110,12 @@ export default buildConfig({
       ssl: { rejectUnauthorized: false },
     },
     /**
-     * Dev-time schema push runs drizzle-kit introspection, which times out
-     * through the pooler (the reason migrations/*.sql are written by hand).
-     * Turning it off stops Payload retrying it on every boot.
+     * Schema push runs drizzle-kit introspection, which used to time out
+     * through the session pooler — hence the hand-written migrations/*.sql.
+     * Off by default so Payload does not retry it on every boot; set
+     * PAYLOAD_DB_PUSH=true locally to apply a schema change.
      */
-    push: false,
+    push: process.env.PAYLOAD_DB_PUSH === 'true',
     // Creating databases is not possible through a pooler.
     disableCreateDatabase: true,
   }),

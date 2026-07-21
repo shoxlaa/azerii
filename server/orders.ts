@@ -7,10 +7,12 @@ import 'server-only';
  * Online payment is intentionally not part of this flow — an order is taken
  * as a *request*, and payment (Stripe/PayPal) is a later step.
  *
- * `recordOrder` is still a stub: it logs the order. Swap it for a Payload
- * collection / DB insert when the orders table exists.
+ * Orders are stored in the `orders` collection and both parties are notified.
+ * Storage is required; notification is best-effort.
  */
 
+import { getPayload } from 'payload';
+import config from '@payload-config';
 import type { Locale, Order, OrderItem, Customer, ShippingMethod } from '@/types';
 import { roundMoney } from '@/lib/format';
 import { sendMail } from './mail';
@@ -123,14 +125,49 @@ function buyerEmail(order: Order): { subject: string; body: string } {
   };
 }
 
-/** Persist the order. Stub: logs it. Replace with a DB/Payload write. */
+/** One-line postal address, or a note that the customer collects in person. */
+function formatAddress(order: Order): string {
+  if (order.shipping === 'pickup') return 'Самовывоз (Баку)';
+  const c = order.customer;
+  return [c.country, c.city, c.address, c.postalCode].filter(Boolean).join(', ');
+}
+
+/**
+ * Persist the order so it appears in the admin.
+ *
+ * Writes through the Local API, which bypasses the collection's `create:
+ * authed` rule — that rule exists to close the public REST endpoint, not to
+ * block checkout. Throws on failure: an order we cannot store must not be
+ * reported to the customer as accepted.
+ */
 async function recordOrder(order: Order): Promise<void> {
-  console.info('[orders] recorded', order.id, {
-    total: order.totalEur,
-    items: order.items.length,
-    shipping: order.shipping,
-    email: order.customer.email,
+  const payload = await getPayload({ config });
+
+  await payload.create({
+    collection: 'orders',
+    data: {
+      orderNumber: order.id,
+      status: order.status,
+      total: order.totalEur,
+      shipping: order.shipping,
+      orderLocale: order.locale,
+      // Snapshot of what was bought, at the price charged.
+      items: order.items.map((i) => ({
+        name: i.name.en,
+        nameRu: i.name.ru,
+        quantity: i.quantity,
+        unitPriceEur: i.unitPriceEur,
+        lineTotalEur: Number((i.unitPriceEur * i.quantity).toFixed(2)),
+      })),
+      customerName: order.customer.name,
+      customerEmail: order.customer.email,
+      customerPhone: order.customer.phone,
+      customerAddress: formatAddress(order),
+      comment: order.comment,
+    },
   });
+
+  console.info('[orders] stored', order.id, `${money(order.totalEur)}`);
 }
 
 /**
@@ -152,14 +189,24 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
     updatedAt: now,
   };
 
+  // Store first: if this fails the caller reports the order as failed, which
+  // is correct — nothing was kept.
   await recordOrder(order);
 
+  // Notifications are best-effort. The order already exists, so a mail outage
+  // must not tell the customer it failed and make them order twice.
   const seller = sellerEmail(order);
   const buyer = buyerEmail(order);
-  await Promise.all([
+  const [sellerSent, buyerSent] = await Promise.all([
     sendMail({ to: SELLER_EMAIL, subject: seller.subject, body: seller.body }),
     sendMail({ to: order.customer.email, subject: buyer.subject, body: buyer.body }),
   ]);
+
+  if (!sellerSent || !buyerSent) {
+    console.error(
+      `[orders] ${order.id} stored but notification incomplete — seller: ${sellerSent}, buyer: ${buyerSent}`,
+    );
+  }
 
   return order;
 }

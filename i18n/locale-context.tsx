@@ -8,7 +8,7 @@
 
 import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
 import type { Locale } from '@/types';
-import { DEFAULT_LOCALE, LOCALE_COOKIE } from './config';
+import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALES } from './config';
 
 /** One year — matches the proxy so the preference is long-lived. */
 const LOCALE_MAX_AGE = 60 * 60 * 24 * 365;
@@ -39,8 +39,14 @@ export function LocaleProvider({
     document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${LOCALE_MAX_AGE}; samesite=lax${secure}`;
   }, []);
 
+  /**
+   * Step to the next locale in LOCALES order, wrapping at the end. Written as
+   * a cycle rather than a two-way flip so adding a locale to LOCALES is the
+   * only change a new language needs here.
+   */
   const toggleLocale = useCallback(() => {
-    setLocale(locale === 'ru' ? 'en' : 'ru');
+    const i = LOCALES.indexOf(locale);
+    setLocale(LOCALES[(i + 1) % LOCALES.length]);
   }, [locale, setLocale]);
 
   return (

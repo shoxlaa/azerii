@@ -13,6 +13,7 @@ import 'server-only';
 import { getPayload } from 'payload';
 import config from '@payload-config';
 import { SAMPLE_PRODUCTS } from '@/constants/sampleProducts';
+import { LOCALES } from '@/i18n/config';
 import type {
   CategoryType,
   Locale,
@@ -114,11 +115,13 @@ function toLocalized(
   transform: (v: unknown) => string = (v) => (typeof v === 'string' ? v : ''),
 ): Record<Locale, string> {
   const v = value as Record<string, unknown>;
-  const isLocalized = v && typeof v === 'object' && ('en' in v || 'ru' in v);
-  return {
-    en: transform(isLocalized ? v.en : value),
-    ru: transform(isLocalized ? v.ru : value),
-  };
+  // Built from LOCALES rather than a fixed {en, ru} literal, so a new locale
+  // is picked up here automatically instead of silently coming back empty.
+  const isLocalized =
+    Boolean(v) && typeof v === 'object' && LOCALES.some((code) => code in v);
+  return Object.fromEntries(
+    LOCALES.map((code) => [code, transform(isLocalized ? v[code] : value)]),
+  ) as Record<Locale, string>;
 }
 
 /** Map a Payload product document to our domain `Product`. */

@@ -4,8 +4,8 @@
 
 import type { Locale } from '@/types';
 
-/** All locales the app supports. */
-export const LOCALES: Locale[] = ['en', 'ru'];
+/** All locales the app supports, in switcher order. */
+export const LOCALES: Locale[] = ['en', 'ru', 'az'];
 
 /** Locale used when none is specified / detected. */
 export const DEFAULT_LOCALE: Locale = 'en';
@@ -21,6 +21,14 @@ export const LOCALE_COOKIE = 'NEXT_LOCALE';
 export const LOCALE_LABELS: Record<Locale, string> = {
   en: 'English',
   ru: 'Русский',
+  az: 'Azərbaycanca',
+};
+
+/** Two-letter code shown in the compact header switcher. */
+export const LOCALE_SHORT: Record<Locale, string> = {
+  en: 'EN',
+  ru: 'RU',
+  az: 'AZ',
 };
 
 /** Type guard: is the given string one of our supported locales? */

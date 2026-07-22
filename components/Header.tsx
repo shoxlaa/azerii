@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { getDictionary } from '@/i18n';
+import { getDictionary, LOCALES, LOCALE_LABELS } from '@/i18n';
+import { LOCALE_SHORT } from '@/i18n/config';
 import { useLocale } from '@/i18n/locale-context';
 import { useCart, useCartHydrated } from '@/hooks/useCart';
 import { ThemeToggle } from './ThemeToggle';
@@ -13,7 +14,7 @@ import { BurgerIcon, CartIcon, CloseIcon } from './icons';
 
 export function Header() {
   const pathname = usePathname();
-  const { locale, toggleLocale } = useLocale();
+  const { locale, setLocale } = useLocale();
   const [menuOpen, setMenuOpen] = useState(false);
   const dict = getDictionary(locale);
 
@@ -75,15 +76,26 @@ export function Header() {
 
         {/* Right actions */}
         <div className="flex items-center gap-4 md:gap-5">
-          <button
-            onClick={toggleLocale}
-            className="font-heading text-sm font-semibold uppercase tracking-wide text-body transition-colors hover:text-accent-text"
-            aria-label="Сменить язык"
-          >
-            {locale === 'ru' ? 'RU' : 'EN'}
-            <span className="mx-1 text-body/30">/</span>
-            <span className="text-body/50">{locale === 'ru' ? 'EN' : 'RU'}</span>
-          </button>
+          {/* Every locale is its own button: with three of them, the old
+              "active / other" pair no longer describes the choice. */}
+          <div className="flex items-center font-heading text-sm font-semibold uppercase tracking-wide">
+            {LOCALES.map((code, i) => (
+              <span key={code} className="flex items-center">
+                {i > 0 ? <span className="mx-1 text-body/30">/</span> : null}
+                <button
+                  type="button"
+                  onClick={() => setLocale(code)}
+                  aria-label={LOCALE_LABELS[code]}
+                  aria-current={code === locale}
+                  className={`transition-colors hover:text-accent-text ${
+                    code === locale ? 'text-body' : 'text-body/50'
+                  }`}
+                >
+                  {LOCALE_SHORT[code]}
+                </button>
+              </span>
+            ))}
+          </div>
 
           {/* Theme toggle (inline on tablet+, in the mobile menu on small screens) */}
           <div className="hidden md:flex">

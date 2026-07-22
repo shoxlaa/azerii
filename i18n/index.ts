@@ -9,11 +9,12 @@ import type { Locale } from '@/types';
 import { DEFAULT_LOCALE, isLocale } from './config';
 import en from './dictionaries/en';
 import ru from './dictionaries/ru';
+import az from './dictionaries/az';
 
 /** Shape of a translation dictionary (derived from the EN dictionary). */
 export type Dictionary = typeof en;
 
-const dictionaries: Record<Locale, Dictionary> = { en, ru };
+const dictionaries: Record<Locale, Dictionary> = { en, ru, az };
 
 /** Get the dictionary for a locale (falls back to the default locale). */
 export function getDictionary(locale: string): Dictionary {

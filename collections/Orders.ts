@@ -76,6 +76,7 @@ export const Orders: CollectionConfig = {
       options: [
         { label: 'English', value: 'en' },
         { label: 'Русский', value: 'ru' },
+        { label: 'Azərbaycanca', value: 'az' },
       ],
       admin: { description: 'Язык, на котором оформлялся заказ.' },
     },

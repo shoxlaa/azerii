@@ -88,41 +88,64 @@ function sellerEmail(order: Order): { subject: string; body: string } {
 
 /** Confirmation for the buyer, in the locale they ordered in. */
 function buyerEmail(order: Order): { subject: string; body: string } {
-  const ru = order.locale === 'ru';
-  return {
-    subject: ru
-      ? `AZERII — заказ ${order.id} принят`
-      : `AZERII — order ${order.id} received`,
-    body: ru
-      ? [
-          `Здравствуйте, ${order.customer.name}!`,
-          '',
-          `Спасибо за заказ. Мы получили вашу заявку № ${order.id}.`,
-          '',
-          'Состав заказа:',
-          itemLines(order),
-          '',
-          `Итого: ${money(order.totalEur)}`,
-          '',
-          'Онлайн-оплата пока недоступна — мы свяжемся с вами, чтобы подтвердить заказ и договориться об оплате и доставке.',
-          '',
-          'С уважением, команда AZERII',
-        ].join('\n')
-      : [
-          `Hello ${order.customer.name},`,
-          '',
-          `Thank you for your order. We have received your request ${order.id}.`,
-          '',
-          'Your order:',
-          itemLines(order),
-          '',
-          `Total: ${money(order.totalEur)}`,
-          '',
-          'Online payment is not available yet — we will contact you to confirm the order and arrange payment and delivery.',
-          '',
-          'The AZERII team',
-        ].join('\n'),
+  // Keyed by locale rather than a ru/en ternary: with a third language the
+  // ternary would have quietly sent Azerbaijani buyers the English letter.
+  const templates: Record<Locale, { subject: string; body: string[] }> = {
+    ru: {
+      subject: `AZERII — заказ ${order.id} принят`,
+      body: [
+        `Здравствуйте, ${order.customer.name}!`,
+        '',
+        `Спасибо за заказ. Мы получили вашу заявку № ${order.id}.`,
+        '',
+        'Состав заказа:',
+        itemLines(order),
+        '',
+        `Итого: ${money(order.totalEur)}`,
+        '',
+        'Онлайн-оплата пока недоступна — мы свяжемся с вами, чтобы подтвердить заказ и договориться об оплате и доставке.',
+        '',
+        'С уважением, команда AZERII',
+      ],
+    },
+    en: {
+      subject: `AZERII — order ${order.id} received`,
+      body: [
+        `Hello ${order.customer.name},`,
+        '',
+        `Thank you for your order. We have received your request ${order.id}.`,
+        '',
+        'Your order:',
+        itemLines(order),
+        '',
+        `Total: ${money(order.totalEur)}`,
+        '',
+        'Online payment is not available yet — we will contact you to confirm the order and arrange payment and delivery.',
+        '',
+        'The AZERII team',
+      ],
+    },
+    az: {
+      subject: `AZERII — ${order.id} nömrəli sifariş qəbul edildi`,
+      body: [
+        `Salam, ${order.customer.name}!`,
+        '',
+        `Sifarişiniz üçün təşəkkür edirik. ${order.id} nömrəli müraciətinizi aldıq.`,
+        '',
+        'Sifarişin tərkibi:',
+        itemLines(order),
+        '',
+        `Cəmi: ${money(order.totalEur)}`,
+        '',
+        'Onlayn ödəniş hələ mövcud deyil — sifarişi təsdiqləmək, ödəniş və çatdırılma barədə razılaşmaq üçün sizinlə əlaqə saxlayacağıq.',
+        '',
+        'Hörmətlə, AZERII komandası',
+      ],
+    },
   };
+
+  const t = templates[order.locale] ?? templates.en;
+  return { subject: t.subject, body: t.body.join('\n') };
 }
 
 /** One-line postal address, or a note that the customer collects in person. */

@@ -82,7 +82,7 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   localization: {
-    locales: ['en', 'ru'],
+    locales: ['en', 'ru', 'az'],
     defaultLocale: 'en',
   },
   db: postgresAdapter({

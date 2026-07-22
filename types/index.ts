@@ -5,7 +5,7 @@
  */
 
 /** Supported UI locales. */
-export type Locale = 'en' | 'ru';
+export type Locale = 'en' | 'ru' | 'az';
 
 /**
  * Availability / lifecycle status of a product.

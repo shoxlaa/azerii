@@ -20,8 +20,10 @@ function make(
   return {
     id: slug,
     slug,
-    name: { en: name, ru: name },
-    description: { en: '', ru: '' },
+    // Demo data: the same model name in every locale, since these are
+    // placeholders that never reach production.
+    name: { en: name, ru: name, az: name },
+    description: { en: '', ru: '', az: '' },
     category,
     tech,
     status,

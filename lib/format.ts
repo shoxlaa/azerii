@@ -21,11 +21,16 @@ export function roundMoney(amount: number): number {
  *
  * @param amount Price in euros (e.g. 499.99).
  * @param locale UI locale controlling number/grouping format.
- * @returns e.g. "€499.99" (en) or "499,99 €" (ru).
+ * @returns e.g. "€499.99" (en) or "499,99 €" (ru, az).
  */
+const INTL_LOCALES: Record<Locale, string> = {
+  en: 'en-IE',
+  ru: 'ru-RU',
+  az: 'az-AZ',
+};
+
 export function formatPrice(amount: number, locale: Locale = 'en'): string {
-  const intlLocale = locale === 'ru' ? 'ru-RU' : 'en-IE';
-  return new Intl.NumberFormat(intlLocale, {
+  return new Intl.NumberFormat(INTL_LOCALES[locale] ?? INTL_LOCALES.en, {
     style: 'currency',
     currency: CURRENCY,
   }).format(amount);

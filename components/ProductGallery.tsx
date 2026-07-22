@@ -60,13 +60,35 @@ function useHasHover(): boolean {
   );
 }
 
-export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
+export function ProductGallery({
+  images,
+  alt,
+  onFullscreenChange,
+}: {
+  images: string[];
+  alt: string;
+  /**
+   * Fires when the lightbox opens or closes. Only needed when the gallery is
+   * rendered inside another dialog: that dialog has its own Escape handler and
+   * must stand down while the lightbox is on top, or one Escape would close
+   * both at once.
+   */
+  onFullscreenChange?: (open: boolean) => void;
+}) {
   const { locale } = useLocale();
   const t = getDictionary(locale).gallery;
 
   const [active, setActive] = useState(0);
   const [zoom, setZoom] = useState<ZoomState | null>(null);
   const [open, setOpen] = useState(false);
+
+  const setFullscreen = useCallback(
+    (v: boolean) => {
+      setOpen(v);
+      onFullscreenChange?.(v);
+    },
+    [onFullscreenChange],
+  );
 
   const imgRef = useRef<HTMLImageElement>(null);
   const hasHover = useHasHover();
@@ -137,7 +159,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
       <div className="relative">
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => setFullscreen(true)}
           onMouseMove={hasHover ? onMouseMove : undefined}
           onMouseLeave={() => setZoom(null)}
           aria-label={t.openFullscreen}
@@ -227,7 +249,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           onShow={show}
           onNext={next}
           onPrev={prev}
-          onClose={() => setOpen(false)}
+          onClose={() => setFullscreen(false)}
           labels={t}
         />
       ) : null}

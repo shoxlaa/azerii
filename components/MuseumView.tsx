@@ -11,7 +11,7 @@
  * an optional link to the catalog when we happen to sell the same kit.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createPortal } from 'react-dom';
@@ -20,10 +20,8 @@ import { MUSEUM_CATEGORIES } from '@/constants';
 import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 import { Container } from './ui/Container';
+import { ProductGallery } from './ProductGallery';
 import { CloseIcon } from './icons';
-
-/** Horizontal travel (px) that counts as a swipe in the exhibit modal. */
-const SWIPE_THRESHOLD = 50;
 
 type Filter = MuseumCategory | 'all';
 
@@ -213,26 +211,19 @@ function ExhibitModal({
   const title = item.title[locale] || item.title.en;
   const description = item.description[locale] || item.description.en;
 
-  const [index, setIndex] = useState(0);
-  const touchX = useRef<number | null>(null);
-  const many = item.images.length > 1;
-
-  const show = useCallback(
-    (i: number) => setIndex(((i % item.images.length) + item.images.length) % item.images.length),
-    [item.images.length],
-  );
-  const next = useCallback(() => show(index + 1), [show, index]);
-  const prev = useCallback(() => show(index - 1), [show, index]);
+  // True while the gallery's fullscreen lightbox is on top of this dialog.
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // The lightbox owns Escape (and the arrows) while it is open; closing
+      // both on a single press would drop the visitor back to the grid.
+      if (fullscreen) return;
       if (e.key === 'Escape') onClose();
-      else if (e.key === 'ArrowRight') next();
-      else if (e.key === 'ArrowLeft') prev();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose, next, prev]);
+  }, [onClose, fullscreen]);
 
   // Lock page scroll while the exhibit is open.
   useEffect(() => {
@@ -242,15 +233,6 @@ function ExhibitModal({
       document.body.style.overflow = previous;
     };
   }, []);
-
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchX.current === null || !many) return;
-    const dx = e.changedTouches[0].clientX - touchX.current;
-    touchX.current = null;
-    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
-    if (dx < 0) next();
-    else prev();
-  };
 
   return createPortal(
     <div
@@ -263,7 +245,10 @@ function ExhibitModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl overflow-hidden rounded-md border border-border bg-panel"
+        // No `overflow-hidden`: the gallery's hover-zoom panel deliberately
+        // spills past the photo column, and clipping it here would slice the
+        // magnified view in half.
+        className="relative w-full max-w-5xl rounded-md border border-border bg-panel"
       >
         <button
           type="button"
@@ -276,51 +261,19 @@ function ExhibitModal({
         </button>
 
         <div className="grid gap-0 md:grid-cols-[1.15fr_1fr]">
-          {/* Photo */}
-          <div
-            className="relative aspect-[4/3] w-full bg-bg"
-            onTouchStart={(e) => {
-              touchX.current = e.changedTouches[0].clientX;
-            }}
-            onTouchEnd={onTouchEnd}
-          >
-            {item.images[index] ? (
-              <Image
-                key={item.images[index]}
-                src={item.images[index]}
-                alt={title}
-                fill
-                sizes="(max-width: 768px) 100vw, 60vw"
-                className="object-contain p-3"
-                data-testid="museum-modal-image"
-              />
-            ) : null}
-
-            {many ? (
-              <>
-                <button
-                  type="button"
-                  onClick={prev}
-                  aria-label={dict.gallery.prev}
-                  data-testid="museum-prev"
-                  className="absolute left-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-bg/80 text-xl leading-none text-body transition-colors hover:border-accent hover:text-accent-text"
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  onClick={next}
-                  aria-label={dict.gallery.next}
-                  data-testid="museum-next"
-                  className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-bg/80 text-xl leading-none text-body transition-colors hover:border-accent hover:text-accent-text"
-                >
-                  ›
-                </button>
-                <span className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-2.5 py-0.5 font-heading text-[11px] uppercase tracking-wide text-cream">
-                  {index + 1} {dict.gallery.counter} {item.images.length}
-                </span>
-              </>
-            ) : null}
+          {/* Photo — the same viewer the catalog uses: hover zoom, thumbnail
+              strip and a fullscreen lightbox, instead of the bare arrows this
+              modal carried before. */}
+          {/* min-w-0: a grid item defaults to min-width:auto, so the gallery's
+              thumbnail strip (7 × 140px, wider than the column) would push the
+              column — and the whole dialog — past max-w-5xl instead of
+              scrolling inside itself. */}
+          <div className="min-w-0 p-5 md:p-7 md:pr-0">
+            <ProductGallery
+              images={item.images}
+              alt={title}
+              onFullscreenChange={setFullscreen}
+            />
           </div>
 
           {/* Info */}

@@ -88,7 +88,8 @@ const az = {
     },
   },
   workshop: {
-    title: 'AZERII emalatxanası',
+    // Kept in English: the workshop is a brand name, not a description.
+    title: 'AZERII Workshop',
     viewAll: 'Bütün videolara baxın',
   },
   promo: {
@@ -306,7 +307,7 @@ const az = {
     counter: '/',
   },
   visitCounter: {
-    label: 'Bu gün ziyarətçi',
+    label: 'Bu günün giriş sayı',
   },
   errorPage: {
     title: 'Nəsə səhv getdi',

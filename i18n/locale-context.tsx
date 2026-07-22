@@ -6,7 +6,14 @@
  * through `useLocale()`, so switching EN/RU re-renders them together.
  */
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { Locale } from '@/types';
 import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALES } from './config';
 
@@ -29,6 +36,21 @@ export function LocaleProvider({
   initialLocale?: Locale;
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
+
+  /**
+   * Keep <html lang> in step with the switcher.
+   *
+   * The server sets the attribute once from the cookie, but switching locale
+   * never reloads the page, so without this the tag keeps the language the
+   * visitor arrived in. That is not cosmetic: `text-transform: uppercase` is
+   * locale-sensitive, and under lang="az" a browser uppercases `i` to `İ` per
+   * the Turkish/Azerbaijani casing rules. English text left under a stale
+   * lang="az" therefore renders AZERİİ in every uppercased heading, button and
+   * nav item — which is most of the site.
+   */
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

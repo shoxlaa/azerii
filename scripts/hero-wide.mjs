@@ -5,8 +5,16 @@ import sharp from 'sharp';
  * window per-photo so the tank is framed well (turret headroom, tracks near the
  * bottom edge). `top` is the fraction (0..1) of the available vertical slack.
  */
-const TARGET_W = 2560;
-const TARGET_H = 800;
+/**
+ * 1280x400 rather than the 2560x800 this used to emit.
+ *
+ * The sources are ~1448px wide, so the old target upscaled them 1.77x — it
+ * invented pixels. Nothing consumed them either: these crops render as the
+ * hero's blurred backdrop (sizes="640px") and as workshop thumbnails
+ * (sizes="220px"), so 1280 already covers the largest slot at 2x DPR.
+ */
+const TARGET_W = 1280;
+const TARGET_H = 400;
 const ASPECT = TARGET_W / TARGET_H; // 3.2
 
 const JOBS = [
@@ -33,7 +41,7 @@ for (const job of JOBS) {
   await sharp(path)
     .extract({ left, top, width: cropW, height: cropH })
     .resize(TARGET_W, TARGET_H)
-    .jpeg({ quality: 84 })
+    .jpeg({ quality: 84, mozjpeg: true, progressive: true })
     .toFile(`public/hero/${job.out}`);
   console.log(`${job.out}  src ${W}x${H}  crop ${cropW}x${cropH}@${left},${top}  top=${job.top}`);
 }

@@ -57,7 +57,9 @@ export function Hero() {
                     alt=""
                     fill
                     priority={i === 0}
-                    sizes="100vw"
+                    /* blur-2xl destroys the detail anyway: ask for one small
+                       width instead of the whole 100vw ladder. */
+                    sizes="640px"
                     className="scale-110 object-cover blur-2xl"
                   />
                   <div className="absolute inset-0 bg-black/40" />

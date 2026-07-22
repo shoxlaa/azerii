@@ -98,7 +98,7 @@ const az = {
   },
   history: {
     eyebrow: 'Tarix',
-    title: 'Hər modelin arxasında bir tarix dayanır',
+    title: 'Hər modelin arxasında bir tarix var',
     text: 'Biz sadəcə model yığmırıq. Mühəndisliyin, döyüşlərin və tarix yazan insanların irsini qoruyuruq.',
     cta: 'Tarixi aç',
   },
@@ -367,3 +367,4 @@ const az = {
 };
 
 export default az;
+

@@ -43,7 +43,6 @@ const INTL_LOCALES: Record<Locale, string> = {
  * @param locale UI locale controlling number/grouping format.
  * @returns e.g. "€499.99" (en), "499,99 €" (ru) or "1.500,00 €" (az).
  */
-
 export function formatPrice(amount: number, locale: Locale = 'en'): string {
   return new Intl.NumberFormat(INTL_LOCALES[locale] ?? INTL_LOCALES.en, {
     style: 'currency',

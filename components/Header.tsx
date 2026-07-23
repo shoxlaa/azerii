@@ -44,16 +44,22 @@ export function Header() {
           <Image
             src="/logo-dark.png"
             alt="AZERII"
-            width={1024}
-            height={1045}
+            /* The mark renders ~43px wide. width/height only carry the aspect
+               ratio and drive the srcset Next builds as [width, width*2], so
+               the old 1024 made a 40px logo fetch a 2048px variant. */
+            width={110}
+            height={112}
             priority
             className="h-9 w-auto md:h-11 dark:hidden"
           />
           <Image
             src="/logo-light.png"
             alt="AZERII"
-            width={1024}
-            height={1045}
+            /* The mark renders ~43px wide. width/height only carry the aspect
+               ratio and drive the srcset Next builds as [width, width*2], so
+               the old 1024 made a 40px logo fetch a 2048px variant. */
+            width={110}
+            height={112}
             priority
             className="hidden h-9 w-auto md:h-11 dark:block"
           />

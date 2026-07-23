@@ -59,15 +59,15 @@ export function Footer() {
               <Image
                 src="/logo-dark.png"
                 alt="AZERII"
-                width={1024}
-                height={1045}
+                width={110}
+                height={112}
                 className="h-10 w-auto dark:hidden"
               />
               <Image
                 src="/logo-light.png"
                 alt="AZERII"
-                width={1024}
-                height={1045}
+                width={110}
+                height={112}
                 className="hidden h-10 w-auto dark:block"
               />
             </Link>

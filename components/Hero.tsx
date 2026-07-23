@@ -106,7 +106,12 @@ export function Hero() {
                             alt=""
                             fill
                             priority={i === 0}
-                            sizes="100vw"
+                            /* object-contain letterboxes the photo inside a
+                               full-width box, so the rendered width is set by
+                               the box height, not the viewport: 52vh x the
+                               ~1.33 source aspect ≈ 70vh. Asking for 100vw
+                               here fetched roughly twice the pixels drawn. */
+                            sizes="70vh"
                             className="object-contain object-[right_center]"
                           />
                           <div className="absolute inset-0 bg-gradient-to-r from-black/80 from-25% via-black/45 to-transparent" />

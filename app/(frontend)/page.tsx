@@ -25,12 +25,13 @@ export default async function Home() {
   return (
     <>
       <Hero />
-      <HistorySection />
-      <MuseumTimeline entries={timeline} />
       <CatalogSection products={items} />
       <FeaturesRow />
       <WorkshopSection videos={videos} />
       <PromoSection />
+      {/* History of Armor — museum ribbon; kept last, right before the footer. */}
+      <HistorySection />
+      <MuseumTimeline entries={timeline} />
     </>
   );
 }

@@ -183,6 +183,7 @@ function HistoryBlock({ entry, flipped }: { entry: MuseumTimelineEntry; flipped:
                   src={entry.image}
                   alt={name}
                   fill
+                  unoptimized
                   sizes="(max-width: 768px) 100vw, 45vw"
                   className="object-contain p-3"
                 />

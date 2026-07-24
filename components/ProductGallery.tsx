@@ -174,6 +174,7 @@ export function ProductGallery({
               alt={alt}
               fill
               priority
+              unoptimized
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain p-3"
             />
@@ -235,7 +236,7 @@ export function ProductGallery({
                 i === active ? 'border-accent' : 'border-transparent hover:brightness-110'
               }`}
             >
-              <Image src={img} alt="" fill sizes="140px" className="object-contain p-1" />
+              <Image src={img} alt="" fill unoptimized sizes="140px" className="object-contain p-1" />
             </button>
           ))}
         </div>
@@ -372,6 +373,7 @@ function Lightbox({
             src={images[active]}
             alt={alt}
             fill
+            unoptimized
             sizes="100vw"
             className="object-contain"
             data-testid="lightbox-image"
@@ -426,7 +428,7 @@ function Lightbox({
                 i === active ? 'border-accent' : 'border-cream/20 hover:border-cream/50'
               }`}
             >
-              <Image src={img} alt="" fill sizes="92px" className="object-contain p-0.5" />
+              <Image src={img} alt="" fill unoptimized sizes="92px" className="object-contain p-0.5" />
             </button>
           ))}
         </div>

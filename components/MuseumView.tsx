@@ -173,6 +173,7 @@ function ExhibitCard({
             src={photo}
             alt={title}
             fill
+            unoptimized
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
             className="object-contain p-2 transition-transform duration-300"
           />

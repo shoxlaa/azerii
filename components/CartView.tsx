@@ -78,6 +78,7 @@ export function CartView({ catalog }: { catalog: Product[] }) {
                             src={item.image}
                             alt={name}
                             fill
+                            unoptimized
                             sizes="128px"
                             className="object-contain p-1"
                           />

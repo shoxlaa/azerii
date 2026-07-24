@@ -177,7 +177,7 @@ export function HeaderSearch() {
                         >
                           <span className="relative h-10 w-12 shrink-0 overflow-hidden rounded bg-bg">
                             {r.image ? (
-                              <Image src={r.image} alt={name} fill sizes="48px" className="object-contain" />
+                              <Image src={r.image} alt={name} fill unoptimized sizes="48px" className="object-contain" />
                             ) : null}
                           </span>
                           <span className="min-w-0 flex-1">

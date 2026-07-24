@@ -197,6 +197,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 src={images[0]}
                 alt=""
                 fill
+                unoptimized
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-contain p-3"
               />

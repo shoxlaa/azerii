@@ -44,6 +44,7 @@ export function ProductCard({
             src={image}
             alt={name}
             fill
+            unoptimized
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 320px"
             className="object-contain p-2"
           />

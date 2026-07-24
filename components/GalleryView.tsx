@@ -55,6 +55,7 @@ export function GalleryView({ paintings }: { paintings: Painting[] }) {
                         src={image}
                         alt={title}
                         fill
+                        unoptimized
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                         className="object-contain p-2"
                       />

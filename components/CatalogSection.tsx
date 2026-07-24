@@ -12,8 +12,8 @@ interface CatalogSectionProps {
   products: Product[];
 }
 
-/** How many models the homepage teases before sending visitors to /catalog. */
-const PREVIEW_COUNT = 3;
+/** How many models the homepage teases before sending visitors to /catalog: two rows of five. */
+const PREVIEW_COUNT = 10;
 
 /** Statuses a visitor can actually buy today. */
 const BUYABLE_STATUSES: ProductStatus[] = ['in_stock', 'limited'];
@@ -54,7 +54,7 @@ export function CatalogSection({ products }: CatalogSectionProps) {
         {items.length === 0 ? (
           <p className="mt-10 text-subtle">{t.empty}</p>
         ) : (
-          <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
             {items.map((product) => (
               <ProductCard
                 key={product.id}

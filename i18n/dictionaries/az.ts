@@ -17,6 +17,13 @@ const az = {
     about: 'Haqqımızda',
     contact: 'Əlaqə',
   },
+  mobileNav: {
+    home: 'Ana səhifə',
+    catalog: 'Kataloq',
+    museum: 'Muzey',
+    gallery: 'Qalereya',
+    cart: 'Səbət',
+  },
   common: {
     brand: 'AZERII',
     tagline: 'Zirehli texnikanın miqyaslı modelləri',

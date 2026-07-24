@@ -9,6 +9,13 @@ const ru = {
     about: 'О нас',
     contact: 'Контакты',
   },
+  mobileNav: {
+    home: 'Главная',
+    catalog: 'Каталог',
+    museum: 'Музей',
+    gallery: 'Галерея',
+    cart: 'Корзина',
+  },
   common: {
     brand: 'AZERII',
     tagline: 'Масштабные модели бронетехники',

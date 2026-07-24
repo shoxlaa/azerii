@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -10,12 +9,11 @@ import { useLocale } from '@/i18n/locale-context';
 import { useCart, useCartHydrated } from '@/hooks/useCart';
 import { ThemeToggle } from './ThemeToggle';
 import { HeaderSearch } from './HeaderSearch';
-import { BurgerIcon, CartIcon, CloseIcon } from './icons';
+import { CartIcon } from './icons';
 
 export function Header() {
   const pathname = usePathname();
   const { locale, setLocale } = useLocale();
-  const [menuOpen, setMenuOpen] = useState(false);
   const dict = getDictionary(locale);
 
   // Badge stays hidden until the persisted cart is read, so SSR and the first
@@ -38,7 +36,7 @@ export function Header() {
 
   return (
     <header className="header-bg sticky top-0 z-[1000] w-full">
-      <div className="mx-auto flex h-[90px] w-full items-center justify-between px-6 md:px-10 lg:px-20">
+      <div className="mx-auto flex h-[90px] w-full items-center justify-between px-6 lg:px-20">
         {/* Logo — dark theme shows the light (cream) mark, light theme the dark (black) mark */}
         <Link href="/" className="flex items-center" aria-label="AZERII — на главную">
           <Image
@@ -65,13 +63,13 @@ export function Header() {
           />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-10 lg:flex">
+        {/* Desktop nav — from md up (tablet included, since the burger is gone) */}
+        <nav className="hidden items-center gap-4 md:flex lg:gap-10">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`font-heading text-[16px] uppercase tracking-wide underline-offset-8 transition-colors hover:text-accent-text hover:underline ${
+              className={`whitespace-nowrap font-heading text-[13px] uppercase tracking-normal underline-offset-8 transition-colors hover:text-accent-text hover:underline lg:text-[16px] lg:tracking-wide ${
                 isActive(item.href) ? 'text-accent-text' : 'text-body'
               }`}
             >
@@ -103,10 +101,8 @@ export function Header() {
             ))}
           </div>
 
-          {/* Theme toggle (inline on tablet+, in the mobile menu on small screens) */}
-          <div className="hidden md:flex">
-            <ThemeToggle />
-          </div>
+          {/* Theme toggle — always in the header now that the burger menu is gone */}
+          <ThemeToggle />
 
           <HeaderSearch />
 
@@ -126,42 +122,8 @@ export function Header() {
               </span>
             )}
           </Link>
-
-          {/* Burger (mobile/tablet) */}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            className="text-body transition-colors hover:text-accent-text lg:hidden"
-            aria-label="Меню"
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <CloseIcon className="h-6 w-6" /> : <BurgerIcon className="h-6 w-6" />}
-          </button>
         </div>
       </div>
-
-      {/* Mobile dropdown menu */}
-      {menuOpen && (
-        <nav className="header-bg border-t border-border lg:hidden">
-          <div className="flex flex-col px-6 py-4 md:px-10">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                className={`py-3 font-heading text-[16px] uppercase tracking-wide transition-colors hover:text-accent-text ${
-                  isActive(item.href) ? 'text-accent-text' : 'text-body'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {/* Theme toggle inside the mobile menu */}
-            <div className="mt-3 border-t border-border pt-4 md:hidden">
-              <ThemeToggle />
-            </div>
-          </div>
-        </nav>
-      )}
     </header>
   );
 }

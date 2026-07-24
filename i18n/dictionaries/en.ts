@@ -9,6 +9,13 @@ const en = {
     about: 'About',
     contact: 'Contact',
   },
+  mobileNav: {
+    home: 'Home',
+    catalog: 'Catalog',
+    museum: 'Museum',
+    gallery: 'Gallery',
+    cart: 'Cart',
+  },
   common: {
     brand: 'AZERII',
     tagline: 'Scale models of armored vehicles',

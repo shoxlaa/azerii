@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import '../globals.css';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { CartHydrator } from '@/components/CartHydrator';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -59,8 +60,13 @@ export default async function RootLayout({
           <LocaleProvider initialLocale={initialLocale}>
             <CartHydrator />
             <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            {/* Content wrapper: bottom padding on phones keeps the fixed
+                MobileBottomNav from covering the footer; removed at md+. */}
+            <div className="flex flex-1 flex-col pb-[72px] md:pb-0">
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <MobileBottomNav />
           </LocaleProvider>
         </ThemeProvider>
         {/* Storefront only — deliberately not mounted in the Payload admin layout. */}

@@ -23,6 +23,52 @@ export function CartIcon(props: IconProps) {
   );
 }
 
+/** House outline — mobile bottom-nav "Home". */
+export function HomeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M4 11 12 4l8 7" />
+      <path d="M6 10v9h12v-9" />
+      <path d="M10 19v-5h4v5" />
+    </svg>
+  );
+}
+
+/** Four tiles — mobile bottom-nav "Catalog". */
+export function CatalogIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinejoin="round" aria-hidden {...props}>
+      <rect x="4" y="4" width="7" height="7" rx="1" />
+      <rect x="13" y="4" width="7" height="7" rx="1" />
+      <rect x="4" y="13" width="7" height="7" rx="1" />
+      <rect x="13" y="13" width="7" height="7" rx="1" />
+    </svg>
+  );
+}
+
+/** Columned facade — mobile bottom-nav "Museum". */
+export function MuseumIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <path d="M4 9 12 4l8 5" />
+      <path d="M5 9h14" />
+      <path d="M6.5 9v8M10 9v8M14 9v8M17.5 9v8" />
+      <path d="M4 20h16" />
+    </svg>
+  );
+}
+
+/** Framed picture — mobile bottom-nav "Gallery". */
+export function GalleryIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+      <rect x="3" y="5" width="18" height="14" rx="1.5" />
+      <circle cx="8" cy="10" r="1.5" />
+      <path d="m4 17 5-4 3 2.5L16 11l4 4" />
+    </svg>
+  );
+}
+
 export function BurgerIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden {...props}>

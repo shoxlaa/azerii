@@ -60,9 +60,9 @@ export default async function RootLayout({
           <LocaleProvider initialLocale={initialLocale}>
             <CartHydrator />
             <Header />
-            {/* Content wrapper: bottom padding on phones keeps the fixed
-                MobileBottomNav from covering the footer; removed at md+. */}
-            <div className="flex flex-1 flex-col pb-[72px] md:pb-0">
+            {/* Content wrapper: bottom padding below xl keeps the fixed
+                MobileBottomNav from covering the footer; removed at xl+. */}
+            <div className="flex flex-1 flex-col pb-[72px] xl:pb-0">
               <main className="flex-1">{children}</main>
               <Footer />
             </div>

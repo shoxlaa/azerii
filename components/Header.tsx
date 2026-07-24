@@ -63,8 +63,8 @@ export function Header() {
           />
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-10 lg:flex">
+        {/* Desktop nav — from xl, where seven items clear the right-hand controls */}
+        <nav className="hidden items-center gap-10 xl:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}

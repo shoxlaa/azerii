@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * MobileBottomNav — fixed bottom navigation for phones (< md).
+ * MobileBottomNav — fixed bottom navigation for phones and tablets (< xl).
  *
- * Replaces the burger menu on small screens; the desktop header nav is
- * untouched. Five destinations, each an icon over a caption, colour-only
+ * Replaces the burger menu below xl, where the desktop header nav (xl:flex)
+ * takes over. Five destinations, each an icon over a caption, colour-only
  * transitions. The cart entry carries the live item count from the same
  * Zustand store the header badge reads.
  */
@@ -39,7 +39,7 @@ export function MobileBottomNav() {
     href === '/' ? pathname === '/' : pathname.startsWith(href);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-panel pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-panel pb-[env(safe-area-inset-bottom)] xl:hidden">
       <ul className="grid grid-cols-5">
         {items.map(({ href, label, Icon }) => {
           const active = isActive(href);

@@ -36,7 +36,7 @@ export function Header() {
 
   return (
     <header className="header-bg sticky top-0 z-[1000] w-full">
-      <div className="mx-auto flex h-[90px] w-full items-center justify-between px-6 lg:px-20">
+      <div className="mx-auto flex h-[90px] w-full items-center justify-between px-6 md:px-10 lg:px-20">
         {/* Logo — dark theme shows the light (cream) mark, light theme the dark (black) mark */}
         <Link href="/" className="flex items-center" aria-label="AZERII — на главную">
           <Image
@@ -63,13 +63,13 @@ export function Header() {
           />
         </Link>
 
-        {/* Desktop nav — from md up (tablet included, since the burger is gone) */}
-        <nav className="hidden items-center gap-4 md:flex lg:gap-10">
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-10 lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`whitespace-nowrap font-heading text-[13px] uppercase tracking-normal underline-offset-8 transition-colors hover:text-accent-text hover:underline lg:text-[16px] lg:tracking-wide ${
+              className={`font-heading text-[16px] uppercase tracking-wide underline-offset-8 transition-colors hover:text-accent-text hover:underline ${
                 isActive(item.href) ? 'text-accent-text' : 'text-body'
               }`}
             >

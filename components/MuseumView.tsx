@@ -157,7 +157,7 @@ function ExhibitCard({
 }) {
   const { locale } = useLocale();
   const title = item.title[locale] || item.title.en;
-  const photo = item.images[0];
+  const photo = item.gridImage ?? item.images[0];
 
   return (
     <button

@@ -104,6 +104,12 @@ export interface MuseumItem {
   /** Image URLs; the first entry is the main photo. */
   images: string[];
   /**
+   * 900px `card` derivative of the main photo, for grid cards (see the Media
+   * collection). Undefined when no derivative exists; grids fall back to
+   * `images[0]`.
+   */
+  gridImage?: string;
+  /**
    * Slug of the catalog product this kit corresponds to, when we sell it.
    * Undefined when the exhibit has no counterpart on sale.
    */
@@ -170,6 +176,12 @@ export interface Product {
   scale: string;
   /** Image URLs; first entry is the primary image. */
   images: string[];
+  /**
+   * 900px `card` derivative of the primary image, for grid cards (see the Media
+   * collection). Undefined when no derivative exists (source narrower than
+   * 900px); grids fall back to `images[0]`.
+   */
+  gridImage?: string;
   /** Whether the product is featured on the homepage. */
   featured?: boolean;
   createdAt: string;
@@ -198,6 +210,12 @@ export interface Painting {
   priceEur: number;
   /** Image URLs; first entry is the primary image. */
   images: string[];
+  /**
+   * 900px `card` derivative of the primary image, for grid cards (see the Media
+   * collection). Undefined when no derivative exists; grids fall back to
+   * `images[0]`.
+   */
+  gridImage?: string;
   createdAt: string;
   updatedAt: string;
 }

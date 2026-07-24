@@ -77,6 +77,16 @@ async function withRetry<T>(label: string, run: () => Promise<T>, attempts = 4):
   throw lastError;
 }
 
+/**
+ * A populated Payload upload field (depth >= 1). Alongside the original `url`,
+ * Payload exposes each configured derivative under `sizes` — we serve the 900px
+ * `card` rendition in grids (see collections/Media.ts).
+ */
+interface PayloadUpload {
+  url?: string | null;
+  sizes?: Partial<Record<'thumbnail' | 'card', { url?: string | null } | null>> | null;
+}
+
 /** Minimal shape of a Payload product document we rely on. */
 interface PayloadProduct {
   id: string | number;
@@ -88,7 +98,7 @@ interface PayloadProduct {
   scale?: string;
   price: number;
   status: ProductStatus;
-  images?: Array<{ url?: string | null } | string | number> | null;
+  images?: Array<PayloadUpload | string | number> | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -142,6 +152,7 @@ function mapProduct(doc: PayloadProduct): Product {
     priceEur: doc.price,
     scale: doc.scale ?? '',
     images,
+    gridImage: uploadSize(doc.images?.[0], 'card') ?? undefined,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };
@@ -168,8 +179,8 @@ interface PayloadMuseumItem {
   description?: Record<Locale, unknown> | unknown;
   category: MuseumCategory;
   scale?: ModelScale | null;
-  mainImage?: { url?: string | null } | string | number | null;
-  gallery?: Array<{ url?: string | null } | string | number> | null;
+  mainImage?: PayloadUpload | string | number | null;
+  gallery?: Array<PayloadUpload | string | number> | null;
   /** Populated at depth >= 1 when the exhibit links to a product. */
   product?: { catalogCode?: string | null } | string | number | null;
   createdAt: string;
@@ -179,8 +190,19 @@ interface PayloadMuseumItem {
 /** Pull a usable URL off a populated upload field. */
 function uploadUrl(value: unknown): string | null {
   return typeof value === 'object' && value
-    ? ((value as { url?: string | null }).url ?? null)
+    ? ((value as PayloadUpload).url ?? null)
     : null;
+}
+
+/**
+ * URL of a named derivative off a populated upload field, falling back to the
+ * original when Payload skipped that size — it never upscales, so a source
+ * narrower than the target has no such rendition.
+ */
+function uploadSize(value: unknown, size: 'thumbnail' | 'card'): string | null {
+  if (typeof value !== 'object' || !value) return null;
+  const upload = value as PayloadUpload;
+  return upload.sizes?.[size]?.url ?? upload.url ?? null;
 }
 
 /** Map a Payload museum document to our domain `MuseumItem`. */
@@ -203,6 +225,7 @@ function mapMuseumItem(doc: PayloadMuseumItem): MuseumItem {
     category: doc.category,
     scale: doc.scale ?? undefined,
     images,
+    gridImage: uploadSize(doc.mainImage, 'card') ?? undefined,
     productSlug: productSlug || undefined,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
@@ -234,8 +257,8 @@ interface PayloadPainting {
   workType: WorkType;
   material: PaintingMaterial;
   price: number;
-  mainImage?: { url?: string | null } | string | number | null;
-  gallery?: Array<{ url?: string | null } | string | number> | null;
+  mainImage?: PayloadUpload | string | number | null;
+  gallery?: Array<PayloadUpload | string | number> | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -258,6 +281,7 @@ function mapPainting(doc: PayloadPainting): Painting {
     // numeric(10,2) can arrive as a string from postgres.
     priceEur: Number(doc.price),
     images,
+    gridImage: uploadSize(doc.mainImage, 'card') ?? undefined,
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };

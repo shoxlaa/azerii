@@ -25,7 +25,7 @@ export function ProductCard({
   addToCartLabel,
 }: ProductCardProps) {
   const addItem = useCart((s) => s.addItem);
-  const image = product.images[0];
+  const image = product.gridImage ?? product.images[0];
   const name = product.name[locale] || product.name.en;
   // No purchase for out-of-stock or in-development items.
   const canBuy = product.status !== 'out_of_stock' && product.status !== 'in_development';

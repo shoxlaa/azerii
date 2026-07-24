@@ -39,7 +39,7 @@ export function GalleryView({ paintings }: { paintings: Painting[] }) {
           <ul className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {paintings.map((painting) => {
               const title = painting.title[locale] || painting.title.en;
-              const image = painting.images[0];
+              const image = painting.gridImage ?? painting.images[0];
 
               return (
                 <li

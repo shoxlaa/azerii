@@ -90,6 +90,14 @@ const en = {
     title: 'AZERII Workshop',
     viewAll: 'Watch all videos',
   },
+  museumSection: {
+    title: 'Museum',
+    viewAll: 'View all exhibits',
+  },
+  gallerySection: {
+    title: 'Gallery',
+    viewAll: 'View all works',
+  },
   promo: {
     title: 'AZERII SCALE MODEL',
     text: 'We build scale models of armored vehicles to preserve history and inspire the next generation of modelers. Every model blends historical accuracy, high quality and love for detail.',

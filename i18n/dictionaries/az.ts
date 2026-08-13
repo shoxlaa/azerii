@@ -99,6 +99,14 @@ const az = {
     title: 'AZERII Workshop',
     viewAll: 'Bütün videolara baxın',
   },
+  museumSection: {
+    title: 'Muzey',
+    viewAll: 'Bütün eksponatlara baxın',
+  },
+  gallerySection: {
+    title: 'Qalereya',
+    viewAll: 'Bütün işlərə baxın',
+  },
   promo: {
     title: 'AZERII SCALE MODEL',
     text: 'Biz tarixi qorumaq və modelçilərin növbəti nəslini ilhamlandırmaq üçün zirehli texnikanın miqyaslı modellərini yaradırıq. Hər model tarixi dəqiqliyin, yüksək keyfiyyətin və detallara sevginin birləşməsidir.',

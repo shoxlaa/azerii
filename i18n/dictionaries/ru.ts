@@ -311,7 +311,7 @@ const ru = {
     counter: 'из',
   },
   visitCounter: {
-    label: 'Посетителей сегодня',
+    label: 'Всего посетителей',
   },
   errorPage: {
     title: 'Что-то пошло не так',

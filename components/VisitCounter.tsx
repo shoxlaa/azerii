@@ -5,7 +5,10 @@ import { getDictionary } from '@/i18n';
 import { useLocale } from '@/i18n/locale-context';
 
 /**
- * VisitCounter — "visitors today", counted once per browser per day.
+ * VisitCounter — visitors since launch, still counted once per browser per day.
+ *
+ * The endpoint records the visit against today and answers with the sum of
+ * every day, so this component only ever shows a running total.
  *
  * Renders nothing until the number arrives, and nothing at all if the request
  * fails, so the footer never reserves space for a value that may not come and

@@ -322,7 +322,7 @@ const az = {
     counter: '/',
   },
   visitCounter: {
-    label: 'Bu günün giriş sayı',
+    label: 'Giriş sayı',
   },
   errorPage: {
     title: 'Nəsə səhv getdi',

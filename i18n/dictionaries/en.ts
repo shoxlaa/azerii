@@ -311,7 +311,7 @@ const en = {
     counter: 'of',
   },
   visitCounter: {
-    label: 'Visitors today',
+    label: 'Total visitors',
   },
   errorPage: {
     title: 'Something went wrong',

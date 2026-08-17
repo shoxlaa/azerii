@@ -1,15 +1,19 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
-import { getPayload } from 'payload';
+import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 
 /**
- * POST /api/visit — count one visitor per day.
+ * POST /api/visit — record a visit and report the all-time total.
  *
  * A visit is counted once per browser per day: the `azerii_visit` cookie holds
- * the day already counted, so a repeat call within the same day just reports
- * the current total. Days roll over at midnight in Baku, not UTC, so the
- * counter matches the shop's own day.
+ * the day already counted, so a repeat call within the same day records
+ * nothing. Days roll over at midnight in Baku, not UTC, so the tally matches
+ * the shop's own day.
+ *
+ * Storage stays per-day — that is the history the admin panel charts — and the
+ * number handed to the footer is the sum of every day, so the counter reads
+ * "visitors since launch" rather than "visitors today".
  */
 
 export const dynamic = 'force-dynamic';
@@ -59,6 +63,24 @@ function endOfDayInBaku(): Date {
   return new Date(now.getTime() + (dayMs - elapsedMs));
 }
 
+/**
+ * Every visit ever recorded, summed across the per-day rows.
+ *
+ * Summed in the route rather than read from a running total, so the figure is
+ * always derived from the rows themselves and cannot drift away from them. One
+ * row per day keeps that cheap — a decade of traffic is a few thousand rows —
+ * and only `count` is selected, so nothing else travels.
+ */
+async function totalVisits(payload: Payload): Promise<number> {
+  const { docs } = await payload.find({
+    collection: 'daily-visits',
+    pagination: false,
+    depth: 0,
+    select: { count: true },
+  });
+  return docs.reduce((sum, doc) => sum + ((doc as { count?: number }).count ?? 0), 0);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const today = todayInBaku();
@@ -74,25 +96,23 @@ export async function POST(request: NextRequest) {
     });
     const existing = docs[0] as { id: string | number; count?: number } | undefined;
 
-    // Seen today already — report the total without counting again.
+    // Seen today already — report the running total without counting again.
     if (alreadyCounted) {
-      return NextResponse.json({ count: existing?.count ?? 0 });
+      return NextResponse.json({ count: await totalVisits(payload) });
     }
 
-    let count: number;
     if (existing) {
-      count = (existing.count ?? 0) + 1;
       await payload.update({
         collection: 'daily-visits',
         id: existing.id as string,
-        data: { count },
+        data: { count: (existing.count ?? 0) + 1 },
       });
     } else {
-      count = 1;
-      await payload.create({ collection: 'daily-visits', data: { date: today, count } });
+      await payload.create({ collection: 'daily-visits', data: { date: today, count: 1 } });
     }
 
-    const response = NextResponse.json({ count });
+    // Summed after the write, so the visitor sees themselves included.
+    const response = NextResponse.json({ count: await totalVisits(payload) });
     response.cookies.set(VISIT_COOKIE, today, {
       httpOnly: true,
       sameSite: 'lax',

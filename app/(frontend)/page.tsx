@@ -39,10 +39,10 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <CatalogSection products={items} />
       {/* Museum and gallery teasers — scrolling card rows, same shape as the workshop. */}
       <MuseumSection items={exhibits.slice(0, ROW_PREVIEW_COUNT)} />
       <GallerySection paintings={paintings.slice(0, ROW_PREVIEW_COUNT)} />
-      <CatalogSection products={items} />
       <FeaturesRow />
       <WorkshopSection videos={videos} />
       <PromoSection />

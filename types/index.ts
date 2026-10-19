@@ -119,8 +119,28 @@ export interface MuseumItem {
 }
 
 /**
- * One block of the museum timeline: a product joined to its curated history
- * note (see `constants/museumHistory.ts`).
+ * History of the original vehicle behind a product, shown on the museum
+ * timeline. Editorial content managed per-product in the CMS: most of the
+ * catalog (chassis, parts) leaves it empty, and a product reaches the timeline
+ * only once `year` is filled in.
+ *
+ * The figures describe the historical vehicle, not the kit, and are printed
+ * verbatim (not localized), so each carries its own units.
+ */
+export interface ProductHistory {
+  /** Year the original entered service — the timeline sorts on this. */
+  year: number;
+  /** Country of origin, shown in Latin exactly as stored. */
+  country: string;
+  crew: string;
+  armor: string;
+  engine: string;
+  weight: string;
+}
+
+/**
+ * One block of the museum timeline: a product flattened together with its
+ * history (see `ProductHistory`).
  *
  * Built on the server and handed to the client component already flattened,
  * so the timeline never has to know about products or history separately.
@@ -184,6 +204,12 @@ export interface Product {
   gridImage?: string;
   /** Whether the product is featured on the homepage. */
   featured?: boolean;
+  /**
+   * History of the original vehicle, for the museum timeline. Present only for
+   * complete vehicles an editor has documented; the product joins the timeline
+   * exactly when `history.year` is set. Fields may be individually blank.
+   */
+  history?: Partial<ProductHistory>;
   createdAt: string;
   updatedAt: string;
 }

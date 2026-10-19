@@ -99,6 +99,14 @@ interface PayloadProduct {
   price: number;
   status: ProductStatus;
   images?: Array<PayloadUpload | string | number> | null;
+  history?: {
+    year?: number | string | null;
+    country?: string | null;
+    crew?: string | null;
+    armor?: string | null;
+    engine?: string | null;
+    weight?: string | null;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -134,6 +142,30 @@ function toLocalized(
   ) as Record<Locale, string>;
 }
 
+/**
+ * Build the optional history block from a product's `history` group.
+ *
+ * A vehicle joins the timeline only when it has a real year, so an empty group
+ * (parts, chassis) collapses to `undefined`. `numeric` can arrive as a string
+ * from postgres — same as `price` — so the year is coerced and rejected unless
+ * it parses to a finite number.
+ */
+function mapHistory(history: PayloadProduct['history']): Product['history'] {
+  // Checked before coercing: Number(null) and Number('') are 0, which would
+  // put every product without a history on the timeline as year 0.
+  if (history?.year == null || history.year === '') return undefined;
+  const year = Number(history.year);
+  if (!Number.isFinite(year)) return undefined;
+  return {
+    year,
+    country: history.country ?? '',
+    crew: history.crew ?? '',
+    armor: history.armor ?? '',
+    engine: history.engine ?? '',
+    weight: history.weight ?? '',
+  };
+}
+
 /** Map a Payload product document to our domain `Product`. */
 function mapProduct(doc: PayloadProduct): Product {
   const images =
@@ -153,6 +185,7 @@ function mapProduct(doc: PayloadProduct): Product {
     scale: doc.scale ?? '',
     images,
     gridImage: uploadSize(doc.images?.[0], 'card') ?? undefined,
+    history: mapHistory(doc.history),
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };

@@ -138,5 +138,64 @@ export const Products: CollectionConfig = {
       localized: true,
       admin: { description: 'Описание (EN/RU).' },
     },
+    {
+      /**
+       * Museum-timeline history of the original vehicle.
+       *
+       * Only complete vehicles have a history to tell — chassis, track sets and
+       * spare parts leave this empty. A product appears on the museum timeline
+       * exactly when `year` here is filled in, and the timeline sorts on it.
+       *
+       * The figures describe the historical vehicle, not the kit, and are
+       * printed verbatim (not localized), so carry their own units.
+       */
+      name: 'history',
+      type: 'group',
+      admin: {
+        description:
+          'История оригинала для музейного таймлайна. Заполняйте только для готовых машин (танк, автомобиль, самолёт). Модель попадает на таймлайн, когда указан год; пустой год — модели на ленте нет.',
+      },
+      fields: [
+        {
+          name: 'year',
+          type: 'number',
+          min: 0,
+          admin: {
+            description: 'Год выпуска / принятия на вооружение. По нему модель встаёт на таймлайн.',
+            placeholder: '1935',
+            width: '50%',
+          },
+        },
+        {
+          name: 'country',
+          type: 'text',
+          admin: {
+            description: 'Страна происхождения (латиницей, напр. «France»).',
+            placeholder: 'France',
+            width: '50%',
+          },
+        },
+        {
+          name: 'crew',
+          type: 'text',
+          admin: { description: 'Экипаж, напр. «3».', placeholder: '3', width: '25%' },
+        },
+        {
+          name: 'armor',
+          type: 'text',
+          admin: { description: 'Броня с единицами, напр. «47 mm».', placeholder: '47 mm', width: '25%' },
+        },
+        {
+          name: 'engine',
+          type: 'text',
+          admin: { description: 'Двигатель, напр. «190 hp».', placeholder: '190 hp', width: '25%' },
+        },
+        {
+          name: 'weight',
+          type: 'text',
+          admin: { description: 'Масса, напр. «19.5 t».', placeholder: '19.5 t', width: '25%' },
+        },
+      ],
+    },
   ],
 };

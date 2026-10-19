@@ -43,6 +43,9 @@ const ru = {
     chassis: 'Шасси',
     tracks: 'Траки',
     armored_car: 'Бронеавтомобили',
+    model_box: 'Коробки для моделей',
+    miniature: 'Миниатюры',
+    tools: 'Инструменты',
   },
   contact: {
     title: 'Свяжитесь с нами',

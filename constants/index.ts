@@ -60,6 +60,9 @@ export const CATEGORY_TYPES: CategoryType[] = [
   'chassis',
   'tracks',
   'armored_car',
+  'model_box',
+  'miniature',
+  'tools',
 ];
 
 /** Museum exhibit categories in display order. */

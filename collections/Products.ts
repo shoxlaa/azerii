@@ -1,8 +1,22 @@
 import type { CollectionConfig } from 'payload';
 import { CATEGORY_TYPES, PRODUCT_STATUSES, TECH_TYPES } from '../constants';
 import { isValidSlug, slugify } from '../lib/slug';
+import type { CategoryType } from '../types';
 
 const authed = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
+
+// Human-readable names for the admin "Type" dropdown; the stored value stays
+// the CategoryType key. Typed as a Record so a new category can't be added to
+// CATEGORY_TYPES without a label here.
+const TYPE_LABELS: Record<CategoryType, string> = {
+  tank: 'Tank — танк',
+  chassis: 'Chassis — шасси',
+  tracks: 'Tracks — траки',
+  armored_car: 'Armored car — бронеавтомобиль',
+  model_box: 'Model box — коробка для модели',
+  miniature: 'Miniature — миниатюра',
+  tools: 'Tools — инструменты',
+};
 
 /**
  * Products — catalog items (scale models).
@@ -70,8 +84,8 @@ export const Products: CollectionConfig = {
       name: 'type',
       type: 'select',
       required: true,
-      options: [...CATEGORY_TYPES],
-      admin: { description: 'Категория техники.' },
+      options: CATEGORY_TYPES.map((value) => ({ value, label: TYPE_LABELS[value] })),
+      admin: { description: 'Категория товара.' },
     },
     {
       name: 'technology',

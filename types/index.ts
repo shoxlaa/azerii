@@ -41,8 +41,18 @@ export type TechType = 'lazer' | '3d' | 'rezin' | 'litnik';
  * - chassis     — vehicle chassis / hulls
  * - tracks      — track sets
  * - armored_car — armored cars
+ * - model_box   — display/storage boxes for models
+ * - miniature   — miniatures
+ * - tools       — modelling tools
  */
-export type CategoryType = 'tank' | 'chassis' | 'tracks' | 'armored_car';
+export type CategoryType =
+  | 'tank'
+  | 'chassis'
+  | 'tracks'
+  | 'armored_car'
+  | 'model_box'
+  | 'miniature'
+  | 'tools';
 
 /**
  * Technique a painting was made with ("тип работы").

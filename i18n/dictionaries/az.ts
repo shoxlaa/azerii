@@ -51,6 +51,9 @@ const az = {
     chassis: 'Şassi',
     tracks: 'Tırtıllar',
     armored_car: 'Zirehli avtomobillər',
+    model_box: 'Model qutuları',
+    miniature: 'Miniatürlər',
+    tools: 'Alətlər',
   },
   contact: {
     title: 'Bizimlə əlaqə',

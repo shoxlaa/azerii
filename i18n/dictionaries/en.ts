@@ -43,6 +43,9 @@ const en = {
     chassis: 'Chassis',
     tracks: 'Tracks',
     armored_car: 'Armored cars',
+    model_box: 'Model boxes',
+    miniature: 'Miniatures',
+    tools: 'Tools',
   },
   contact: {
     title: 'Get in touch',

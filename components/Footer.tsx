@@ -25,13 +25,13 @@ export function Footer() {
   // href: null marks an entry whose page does not exist yet — it renders as
   // plain text instead of a link that goes nowhere.
   // Catalog entries deep-link into the filters useFilters reads from the query
-  // string. Dioramas/accessories have no matching CategoryType, so they stay
-  // unlinked until the catalog taxonomy grows one.
+  // string. Accessories map onto the `tools` category; dioramas have no
+  // matching CategoryType, so they stay unlinked until the taxonomy grows one.
   const catalogLinks = [
     { label: t.catalog.tanks, href: '/catalog?category=tank' },
     { label: t.catalog.armor, href: '/catalog?category=armored_car' },
     { label: t.catalog.dioramas, href: null },
-    { label: t.catalog.accessories, href: null },
+    { label: t.catalog.accessories, href: '/catalog?category=tools' },
     { label: t.catalog.gallery, href: '/gallery' },
     { label: t.catalog.comingSoon, href: '/catalog?status=coming_soon' },
   ];
